@@ -8,5 +8,5 @@ pip install ttemtoolbox
 ```
 import package
 ```
-
+import tTEM_toolbox as tt
 ```
