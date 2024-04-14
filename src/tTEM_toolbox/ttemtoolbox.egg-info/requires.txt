@@ -1,0 +1,7 @@
+numpy
+pyroj
+scipy
+xarray
+plotly
+requests
+pandas
