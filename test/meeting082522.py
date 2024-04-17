@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Todo: seperate ttEM into above and below water table, run bootstrap for two parts to see result
 import os
 import numpy as np

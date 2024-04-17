@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # This is the script for the 3rd manuscript.
 import numpy as np
 import pandas as pd

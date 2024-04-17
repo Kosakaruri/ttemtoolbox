@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import tTEM_toolbox as tt
 import pathlib
 from pathlib import Path

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #TODO generate a drawdown map base on the water well map
 import tTEM_tool as tt
 import os

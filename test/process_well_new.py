@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import pandas as pd
 from pyproj import Transformer
 from progress.bar import Bar

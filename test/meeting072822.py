@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #goal
 #plot the water level vs ttem data
 #surface plot time series

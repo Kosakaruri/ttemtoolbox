@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import dash
 from dash import dcc, html
 

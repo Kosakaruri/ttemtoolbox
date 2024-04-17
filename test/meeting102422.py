@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #TODO Excute the bootstrap result without selecting well logs
 import tTEM_tool as tt
 import os
