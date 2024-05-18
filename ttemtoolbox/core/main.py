@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import pathlib
-from tTEM_toolbox import core
+from ttemtoolbox import core
 #import concurrent.
 
 class ProcessTTEM():

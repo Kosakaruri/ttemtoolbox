@@ -3,7 +3,7 @@ import pathlib
 import numpy as np
 import pandas as pd
 from scipy.stats import pearsonr
-from tTEM_toolbox.core.process_well import ProcessWell
+from ttemtoolbox.core.process_well import ProcessWell
 '''def select_closest(dataframe, formatwell, WIN, distance=500):
     # preprocess 1. select line of tTEM data base on the location of well
     well_filt_WIN = formatwell[formatwell["Bore"] == WIN]

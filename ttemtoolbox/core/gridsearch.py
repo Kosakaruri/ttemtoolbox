@@ -1,4 +1,4 @@
-import tTEM_toolbox as tt
+import ttemtoolbox as tt
 
 def value_search(ttem_data_df, welllog, WIN, rho_fine=10, rho_coarse=25,step=1, loop_range=20,correct=False):
     #progress = Bar('Processing', max=100)

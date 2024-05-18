@@ -7,8 +7,8 @@ import pathlib
 import re
 import pandas as pd
 import numpy as np
-from tTEM_toolbox.defaults.constants import XYZ_FILE_PATTERN, DOI_FILE_PATTERN
-from tTEM_toolbox.utils.tools import skip_metadata
+from ttemtoolbox.defaults.constants import XYZ_FILE_PATTERN, DOI_FILE_PATTERN
+from ttemtoolbox.utils.tools import skip_metadata
 
 
 class ProcessTTEM:

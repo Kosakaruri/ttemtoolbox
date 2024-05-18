@@ -15,9 +15,9 @@ import xarray
 import datetime
 from itertools import compress
 from pathlib import Path
-from tTEM_toolbox.defaults import constants
-from tTEM_toolbox import utils
-from tTEM_toolbox.utils import tools
+from ttemtoolbox.defaults import constants
+from ttemtoolbox import utils
+from ttemtoolbox.utils import tools
 from collections import namedtuple
 class ProcessWell:
     """
