@@ -33,7 +33,7 @@ class ProcessTTEM:
                  doi_path: (pathlib.PurePath, str, list) = False,
                  layer_exclude: list = False,
                  line_exclude: list = False,
-                 point_exclude: list = False,
+                 ID_exclude: list = False,
                  resample: int = False):
         if not isinstance(fname, list):
             fname = [fname]
@@ -43,13 +43,13 @@ class ProcessTTEM:
         self.doi_path = doi_path
         self.layer_exclude = layer_exclude
         self.line_exclude = line_exclude
-        self.point_exclude = point_exclude
+        self.ID_exclude = ID_exclude
         self.resample = resample
         self.ttem_data = self.format_ttem()
 
 
     @staticmethod
-    def _read_ttem(fname: (pathlib.PurePath, str)) -> (pd.DataFrame, dict):
+    def _read_ttem(fname: pathlib.PurePath| str) -> pd.DataFrame| dict:
         """
         This function read tTEM data from .xyz file, and return a formatted dataframe that contains all the tTEM data. \n
         Version 11.18.2023 \n
@@ -124,10 +124,10 @@ class ProcessTTEM:
         return df_out
 
     @staticmethod
-    def _point_exclude(dataframe: pd.DataFrame,
-                       point_exclude: list) -> pd.DataFrame:
-        df_out = dataframe[~dataframe[['UTMX','UTMY']].isin(point_exclude)]
-        [print('Exclude point {},{}'.format(x[0], x[1])) for x in point_exclude]
+    def _ID_exclude(dataframe: pd.DataFrame,
+                       ID_exclude: list) -> pd.DataFrame:
+        df_out = dataframe[~dataframe["ID"].isin(ID_exclude)]
+        [print('Exclude point {}'.format(x)) for x in ID_exclude]
         return df_out
 
     @staticmethod
@@ -200,8 +200,8 @@ class ProcessTTEM:
             tmp_df = self._layer_exclude(tmp_df, self.layer_exclude)
         if self.line_exclude:
             tmp_df = self._layer_exclude(tmp_df, self.line_exclude)
-        if self.point_exclude:
-            tmp_df = self._point_exclude(tmp_df, self.point_exclude)
+        if self.ID_exclude:
+            tmp_df = self._ID_exclude(tmp_df, self.ID_exclude)
         if self.doi_path:
             tmp_df = self._DOI(tmp_df, self.doi_path)
         if self.resample:

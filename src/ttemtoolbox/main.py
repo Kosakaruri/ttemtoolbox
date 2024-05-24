@@ -4,7 +4,59 @@ import pandas as pd
 import xarray as xr
 import pathlib
 from ttemtoolbox import core
+from ttemtoolbox import __version__
+import argparse
 #import concurrent.
+
+
+def create_parser():
+    synopsis = 'This is a python interface for ttemtoolbox program'
+    name = 'ttemtoolbox'
+    parser = argparse.ArgumentParser(
+        name, description=synopsis)
+    parser.add_argument("--get_config",action='store_true', help='Generate default config file')
+    parser.add_argument("-f","--force_clean", help="To force remove all files for new program",
+                        action="store_true")
+    parser.add_argument("--example_data", help="To download example data",
+                        action="store_true")
+    parser.add_argument("-v", "--version", action='version', version='lastree {}'.format(__version__))
+    subparser = parser.add_subparsers()
+    subparser_ttem = subparser.add_parser('ttem')
+    subparser_ttem.add_argument('config_path', metavar='PATH', help = 'Path to config file')
+    subparser_ttem.add_argument('--layer_exclude', nargs='+', metavar='int(s)', type=int,
+                                   help='Specify exclude layers when processing ttem data, \
+                                   this can also be done in config file')
+    subparser_ttem.add_argument('--line_exclude', nargs='+', metavar='int(s)', type=int,
+                                   help='Specify exclude lines when processing ttem data, \
+                                   this can also be done in config file')
+    subparser_ttem.add_argument('--ID_exclude', nargs='+', metavar='int(s)', type=int,
+                                help='Specify exclude ID when processing ttem data, \
+                                   this can also be done in config file')
+    subparser_lithology = subparser.add_parser('lithology')
+    subparser_lithology.add_argument('config_path', metavar='PATH', help = 'Path to config file')
+    
+    return parser
+
+def cmd_line_parse(iargs=None):
+    default_config_path = Path(__file__).parent.joinpath('defaults/CONFIG')
+    parser = create_parser()
+    inps = parser.parse_args(args=iargs)
+    if inps.path:
+        inps.path = Path(inps.path).resolve()
+    if inps.force_overlap:
+        print('All result will be purged')
+    if inps.generate_config:
+        user_given_path = Path(inps.generate_config).resolve()
+        if user_given_path.is_dir():
+            user_given_path = user_given_path.joinpath('CONFIG')
+        shutil.copyfile(default_config_path, user_given_path)
+        print('Default CONFIG file generated in {}'.format(user_given_path))
+        sys.exit(0)
+    if inps.example_data:
+        tools.download_example()
+        sys.exit(0)
+    return inps
+
 
 class ProcessTTEM():
     def __init__(self, ttem_path, **kwargs):

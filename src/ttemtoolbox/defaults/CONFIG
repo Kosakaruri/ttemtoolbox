@@ -1,0 +1,28 @@
+############################################
+# This is the config file for ttemtoolbox  #
+############################################
+# Version 05.18.2024
+# Author: Jiawei Li
+############################################
+# Path to tTEM data file 
+## File exported from Aarhus workbench (only xyz file is currently supported)
+## e.g. ttem_path = '~/ttemproject/export.xyz'
+ttem_path = '~/ttem.xyz'
+# Path to DOI file
+## Depth of investigation file exported from Aarhus workbench
+## e.g. doi = '~/ttemproject/doi.xyz'
+doi = '~/doi.xyz'
+# Path to well log file
+## Well log contains lithology information, see example well log file in data folder, support csv and xls, xlsx
+## e.g. well_path = '~/ttemproject/welllog.xlsx'
+well_path = '~/welllog.xlsx'
+# Path to borehole gamma log file
+## Gamma log file contains borehole gamma data, see example gamma log in data folder
+## e.g. gamma_path = '~/ttemproject/gamma.xlsx'
+gamma_path = '~/gamma.xlsx'
+# Output directory
+## Provide path to the output directory 
+## e.g. output = '~/output'
+output = '~/output'
+###############tTEM process related config
+layer_exclude = []
