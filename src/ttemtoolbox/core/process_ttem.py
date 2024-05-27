@@ -30,11 +30,11 @@ class ProcessTTEM:
     """
     def __init__(self,
                  fname: (pathlib.PurePath, str, pd.DataFrame,list),
-                 doi_path: (pathlib.PurePath, str, list) = False,
-                 layer_exclude: list = False,
-                 line_exclude: list = False,
-                 ID_exclude: list = False,
-                 resample: int = False):
+                 doi_path: pathlib.PurePath| str| list = None,
+                 layer_exclude: list = None,
+                 line_exclude: list = None,
+                 ID_exclude: list = None,
+                 resample: int = None):
         if not isinstance(fname, list):
             fname = [fname]
         if not isinstance(doi_path, list) and doi_path:
@@ -74,6 +74,27 @@ class ProcessTTEM:
                                 })
         df = df[~(df['Thickness_STD'] == float(9999))]
         return df
+    
+    @staticmethod
+    def _find_crs(fname: pathlib.PurePath| str) -> str:
+        """
+        This function is used to find the CRS of the tTEM data, it will return the CRS of the tTEM data. \n
+         \n
+        :param fname: A string or pathlib.PurePath object that contains the path to the tTEM .xyz file exported from Aarhus Workbench
+        :return: CRS of the tTEM data
+        """
+        with open(fname, "r") as file:
+            lines = file.readlines()
+        pattern = re.compile(r"epsg:(\d+)", re.IGNORECASE)
+        for line in lines:
+            match = pattern.search(line)
+            if match:
+                crs = match.group(1)
+                break
+            else:
+                crs = None
+        return crs
+
 
     @staticmethod
     def _DOI(dataframe: pd.DataFrame,
@@ -196,15 +217,15 @@ class ProcessTTEM:
         if tmp_df.empty:
             raise ValueError("The input is empty!")
     # Create filter parameters
-        if self.layer_exclude:
+        if self.layer_exclude is not None:
             tmp_df = self._layer_exclude(tmp_df, self.layer_exclude)
-        if self.line_exclude:
+        if self.line_exclude is not None:
             tmp_df = self._layer_exclude(tmp_df, self.line_exclude)
-        if self.ID_exclude:
+        if self.ID_exclude is not None:
             tmp_df = self._ID_exclude(tmp_df, self.ID_exclude)
-        if self.doi_path:
+        if self.doi_path is not None:
             tmp_df = self._DOI(tmp_df, self.doi_path)
-        if self.resample:
+        if self.resample is not None:
             tmp_df = self._resample(tmp_df, self.resample)
     # Sort the dataframe
         tmp_df = tmp_df.sort_values(by=['ID', 'Line_No','Layer_No'])
@@ -216,6 +237,13 @@ class ProcessTTEM:
     def data(self) -> pd.DataFrame:
         return self.ttem_data
 
+    def crs(self) -> str:
+        try:
+            crs = self._find_crs(self.fname[0])
+        except:
+            print('No CRS found in the file, set CRS to None.')
+            crs = None
+        return crs
 
     def summary(self) -> pd.DataFrame:
         """
@@ -238,8 +266,8 @@ class ProcessTTEM:
 
 if __name__ == "__main__":
     print('This is a module, please import it to use it.')
-    import tTEM_toolbox
+    import ttemtoolbox
     from pathlib import Path
     workdir = Path.cwd()
     ttem_lslake = workdir.parent.parent.joinpath(r'data\PD22_I03_MOD.xyz')
-    ttem_lsl = tTEM_toolbox.ProcessTTEM(ttem_lslake)
+    ttem_lsl = ttemtoolbox.process_ttem.ProcessTTEM(ttem_lslake)
