@@ -5,6 +5,7 @@
 # Author: Jiawei Li
 
 XYZ_FILE_PATTERN = 'ID'
+EPSG_FILE_PATTERN = 'EPSG'
 DOI_FILE_PATTERN = 'UTMX'
 CSV_EXTENSION = ('.csv',)
 EXCEL_EXTENSION = ('.xlsx', '.xls', '.xlsm')

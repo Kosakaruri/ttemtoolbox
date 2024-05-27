@@ -11,7 +11,7 @@ ttem_path = '~/ttem.xyz'
 # Path to DOI file
 ## Depth of investigation file exported from Aarhus workbench
 ## e.g. doi = '~/ttemproject/doi.xyz'
-doi = '~/doi.xyz'
+doi_path = '~/doi.xyz'
 # Path to well log file
 ## Well log contains lithology information, see example well log file in data folder, support csv and xls, xlsx
 ## e.g. well_path = '~/ttemproject/welllog.xlsx'
@@ -26,3 +26,8 @@ gamma_path = '~/gamma.xlsx'
 output = '~/output'
 ###############tTEM process related config
 layer_exclude = []
+line_exclude = []
+ID_exclude = []
+###############Lithology welllog process related config
+original_crs = 'epsg:4326'
+project_crs = 'epsg:32612'

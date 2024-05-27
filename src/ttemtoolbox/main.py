@@ -3,9 +3,13 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import pathlib
-from ttemtoolbox import core
+from ttemtoolbox import process_ttem, process_gamma, process_well
+from ttemtoolbox import tools
 from ttemtoolbox import __version__
+from pathlib import Path
 import argparse
+import shutil
+import sys
 #import concurrent.
 
 
@@ -14,6 +18,7 @@ def create_parser():
     name = 'ttemtoolbox'
     parser = argparse.ArgumentParser(
         name, description=synopsis)
+    parser.add_argument('-c',"--config_path", metavar="PATH", help = 'Run entire ttem rock physics tranform process')
     parser.add_argument("--get_config",action='store_true', help='Generate default config file')
     parser.add_argument("-f","--force_clean", help="To force remove all files for new program",
                         action="store_true")
@@ -22,7 +27,7 @@ def create_parser():
     parser.add_argument("-v", "--version", action='version', version='lastree {}'.format(__version__))
     subparser = parser.add_subparsers()
     subparser_ttem = subparser.add_parser('ttem')
-    subparser_ttem.add_argument('config_path', metavar='PATH', help = 'Path to config file')
+    subparser_ttem.add_argument('ttem', metavar='PATH', help = 'Path to config file')
     subparser_ttem.add_argument('--layer_exclude', nargs='+', metavar='int(s)', type=int,
                                    help='Specify exclude layers when processing ttem data, \
                                    this can also be done in config file')
@@ -33,31 +38,85 @@ def create_parser():
                                 help='Specify exclude ID when processing ttem data, \
                                    this can also be done in config file')
     subparser_lithology = subparser.add_parser('lithology')
-    subparser_lithology.add_argument('config_path', metavar='PATH', help = 'Path to config file')
-    
+    subparser_lithology.add_argument('lithology', metavar='PATH', help = 'Path to config file')
     return parser
 
 def cmd_line_parse(iargs=None):
     default_config_path = Path(__file__).parent.joinpath('defaults/CONFIG')
+    default_data_path = Path(__file__).parents[2].joinpath('data')
     parser = create_parser()
     inps = parser.parse_args(args=iargs)
-    if inps.path:
-        inps.path = Path(inps.path).resolve()
-    if inps.force_overlap:
+    if inps.config_path:
+        inps.config_path = Path(inps.config_path).resolve()
+        if inps.config_path.is_dir():
+            inps.config_path = inps.config_path.joinpath('CONFIG')
+    if inps.force_clean:
         print('All result will be purged')
-    if inps.generate_config:
-        user_given_path = Path(inps.generate_config).resolve()
-        if user_given_path.is_dir():
-            user_given_path = user_given_path.joinpath('CONFIG')
-        shutil.copyfile(default_config_path, user_given_path)
-        print('Default CONFIG file generated in {}'.format(user_given_path))
+    if inps.get_config:
+        copypath = Path.cwd().joinpath('CONFIG')
+        shutil.copyfile(default_config_path, copypath)
+        print('Default CONFIG file generated in {}'.format(copypath))
         sys.exit(0)
     if inps.example_data:
-        tools.download_example()
+        copypath = Path.cwd().joinpath('data')
+        data_files = default_data_path.glob('*')
+        for file in data_files:
+            shutil.copy(file, copypath)
         sys.exit(0)
     return inps
 
 
+def main_process_ttem(config, 
+                      layer_exclude: list = None, 
+                      line_exclude: list = None, 
+                      ID_exclude: list = None, 
+                      resample: int = None):
+    if layer_exclude is not None:
+        layer_exclude_copy = layer_exclude
+    else:
+        print('found layer_exclude in config file')
+        layer_exclude_copy = config['layer_exclude']
+    if line_exclude is not None:
+        line_exclude_copy = line_exclude
+    else:
+        print('found line_exclude in config file')
+        line_exclude_copy = config['line_exclude']
+    if ID_exclude is not None:
+        ID_exclude_copy = ID_exclude
+    else:
+        print('found ID_exclude in config file')
+        ID_exclude_copy = config['ID_exclude']
+    if resample is not None:
+        resample_copy = resample
+    else:
+        print('found resample in config file')
+        resample_copy = config['resample']
+    ttem = process_ttem.ProcessTTEM(
+        fname = config['ttem_path'],
+        doi_path=config['doi_path'],
+        layer_exclude = layer_exclude_copy,
+        line_exclude = line_exclude_copy,
+        ID_exclude = ID_exclude_copy,
+        resample = resample_copy
+    )
+    ttem_data = ttem.data()
+    ttem_summary = ttem.summary()
+    ttem_summary = ttem_summary.to_csv(config['delivered_folder'] + Path(config['ttem_path']).stem + '_summary.csv')
+    ttem
+    
+    
+    
+def main(iargs=None):
+    inps = vars(cmd_line_parse(iargs)) # parse to dict
+    if inps.get('ttem'):
+        print('Process ttem')
+        config = tools.parse_config(inps['ttem'])
+        ttem = main_process_ttem(config, )
+    if inps.get('lithology'):
+        print('process lithology')
+    return print(inps)
+        
+'''
 class ProcessTTEM():
     def __init__(self, ttem_path, **kwargs):
         self.ttem_path = ttem_path
@@ -208,9 +267,11 @@ class GWSurface():
 
 #df.sl_lev_va=df.sl_lev_va.astype(float).div(3.2808)
 
-
-
-
+'''
+if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        sys.argv.append('-h')
+    main(sys.argv[1:])
 
 
 

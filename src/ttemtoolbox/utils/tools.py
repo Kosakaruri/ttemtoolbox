@@ -2,6 +2,7 @@
 import pandas as pd
 import pathlib
 import re
+import shutil
 
 def keyword_search(fname, pattern):
     """
@@ -19,17 +20,18 @@ def keyword_search(fname, pattern):
         match = [column for column in columns if column.lower() in pattern]
         return match
     else:
-        raise TypeError('fname must be dict or DataFrame')
+        raise TypeError('fname must be dict or DataFrame')      
+
 
 def skip_metadata(fname: pathlib.PurePath | str,
-                  keyword_pattern: str) -> list:
+                  keyword: str) -> list:
     """
     Use given keyword pattern to skip any metadata above the file in tTEM xyz file
     :return:
     """
     with open(str(fname), 'r') as file:
         lines = file.readlines()
-    regex = re.compile(keyword_pattern)
+    regex = re.compile(keyword)
     match_index = []
     for index, line in enumerate(lines):
         if regex.search(line):
@@ -81,5 +83,40 @@ def parse_config(config_path: str | pathlib.PurePath) -> dict:
         value = type_convert(value)
         config[key] = value
     return config
+
+
+def clean_output(output_folder: pathlib.PurePath, force=False):
+    if force:
+        shutil.rmtree(output_folder)
+    if any(output_folder.joinpath('deliver').glob('*')):
+        userinput = input('Files under delivery folder, would you like to continue remove y/n？')
+        if userinput.lower() == 'y':
+            shutil.rmtree(output_folder)
+        else:
+            return
+            
+        
+def create_dir_structure(output_folder: pathlib.PurePath) -> dict:
+    clean_output(output_folder)
+    temp_folder = output_folder.joinpath('temp')
+    temp_folder.mkdir(parents=True, exist_ok=True)
+    deliver_folder = output_folder.joinpath('deliver')
+    deliver_folder.mkdir(parents=True, exist_ok=True)
+    ttem_temp = temp_folder.joinpath('ttem_temp')
+    well_temp = temp_folder.joinpath('well_temp')
+    gamma_temp = temp_folder.joinpath('gamma_temp')
+    water_level_temp = temp_folder.joinpath('water_level_temp')
+    ttem_temp.mkdir(parents=True, exist_ok=True)
+    well_temp.mkdir(parents=True, exist_ok=True)
+    gamma_temp.mkdir(parents=True, exist_ok=True)
+    water_level_temp.mkdir(parents=True, exist_ok=True)
+    file_structure_dict = {'deliver_folder':deliver_folder,
+                           'ttem_temp':ttem_temp,
+                           'well_temp':well_temp,
+                           'gamma_temp':gamma_temp,
+                           'water_level_temp':water_level_temp}
+    return file_structure_dict
+
+
     
     
