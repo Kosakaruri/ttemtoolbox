@@ -111,16 +111,16 @@ def create_dir_structure(config: dict) -> dict:
     ttem_temp = temp_folder.joinpath('ttem_temp')
     well_temp = temp_folder.joinpath('well_temp')
     gamma_temp = temp_folder.joinpath('gamma_temp')
-    water_level_temp = temp_folder.joinpath('water_level_temp')
+    water_temp = temp_folder.joinpath('water_temp')
     ttem_temp.mkdir(parents=True, exist_ok=True)
     well_temp.mkdir(parents=True, exist_ok=True)
     gamma_temp.mkdir(parents=True, exist_ok=True)
-    water_level_temp.mkdir(parents=True, exist_ok=True)
+    water_temp.mkdir(parents=True, exist_ok=True)
     file_structure_dict = {'deliver': deliver_folder,
                            'ttem_temp':ttem_temp,
                            'well_temp':well_temp,
                            'gamma_temp':gamma_temp,
-                           'water_level_temp':water_level_temp}
+                           'water_temp':water_temp}
     new_config = {**config, **file_structure_dict}
     return new_config
 

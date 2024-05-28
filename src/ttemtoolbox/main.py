@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 import pathlib
-from ttemtoolbox import process_ttem, process_gamma, process_well
+from ttemtoolbox import process_ttem, process_gamma, process_well, process_water
 from ttemtoolbox import tools
 from ttemtoolbox import __version__
 from pathlib import Path
@@ -47,6 +47,9 @@ def create_parser():
     subparser_lithology.add_argument('lithology', metavar='PATH', help = 'Path to config file')
     subparser_lithology.add_argument('--reproject', metavar='str', type=str, help='Reproject welllog data to a new crs')
     subparser_lithology.add_argument('--resample', metavar='int', type=int, help='Resample welllog data')
+    subparser_water = subparser.add_parser('water')
+    subparser_water.add_argument('water', metavar='PATH', help = 'Path to config file')
+    subparser_water.add_argument('-w','--well_no', metavar='str[s]', help='Download specific well number')
     return parser
 
 def cmd_line_parse(iargs=None):
@@ -133,6 +136,28 @@ def step_lithology(config, inps):
     lithology.data.to_csv(config['well_temp'].joinpath(Path(config['well_path']).stem+ '.csv'), index=False)
     return lithology.data
 
+def step_gamma(config, inps):
+    return
+
+def step_water(config, inps):
+    print('Step4: Process water level data')
+    if inps.get('well_no'):
+        config['USGS_well_NO'] = inps['well_no']
+    concat_list = []
+    meta_data_list = []
+    for well in config['USGS_well_NO']:
+        water = process_water.format_usgs_water(well, config['water_temp'])
+        concat_list.append(water)
+        meta_data_list.append(pd.DataFrame(water.attrs, index=[0]))
+    water = pd.concat(concat_list)
+    water.reset_index(drop=True, inplace=True)
+    meta = pd.concat(meta_data_list)
+    meta.reset_index(drop=True, inplace=True)
+    with pd.ExcelWriter(config['deliver'].joinpath('water_level.xlsx')) as writer:
+        water.to_excel(writer, sheet_name='water_level', index=False)
+        meta.to_excel(writer, sheet_name='metadata', index=False)
+    print('Water level data saved in {}'.format(config['deliver'].joinpath('water_level.xlsx')))
+    return water, meta
 
 def main(iargs=None):
     inps = vars(cmd_line_parse(iargs)) # parse CLI input to dict
@@ -163,7 +188,14 @@ def main(iargs=None):
         step_lithology(config, inps)
         
     #########Step3: Process gamma
+    if inps.get('gamma'):
+        print('This feature is still under development ')
     #########Step4: Process water level
+    if inps.get('water'):
+        user_config = tools.parse_config(inps['water'])
+        tools.clean_output(Path(user_config['output']))
+        config = tools.create_dir_structure(user_config)
+        step_water(config, inps)
     #########Step5: 
 
         

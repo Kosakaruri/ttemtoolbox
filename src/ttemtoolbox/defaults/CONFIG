@@ -39,3 +39,6 @@ lithology_crs = 'epsg:4326'
 lithology_reproject_crs = 'epsg:32612'
 lithology_resample =  
 # Resample the well log from log depth to linear depth interval, default is None
+###############Gamma log related config
+###############Water table related config
+USGS_well_NO = ['375033112561101', '375006112554801']
