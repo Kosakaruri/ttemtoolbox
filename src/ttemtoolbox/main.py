@@ -24,10 +24,11 @@ def create_parser():
                         action="store_true")
     parser.add_argument("--example_data", help="To download example data",
                         action="store_true")
-    parser.add_argument("-v", "--version", action='version', version='lastree {}'.format(__version__))
+    parser.add_argument("-v", "--version", action='version', version='ttemtoolbox {}'.format(__version__))
     subparser = parser.add_subparsers()
     subparser_ttem = subparser.add_parser('ttem')
     subparser_ttem.add_argument('ttem', metavar='PATH', help = 'Path to config file')
+    subparser_ttem.add_argument('--doi_path', metavar='PATH', help='Path to doi file')
     subparser_ttem.add_argument('--layer_exclude', nargs='+', metavar='int(s)', type=int,
                                    help='Specify exclude layers when processing ttem data, \
                                    this can also be done in config file')
@@ -37,8 +38,15 @@ def create_parser():
     subparser_ttem.add_argument('--ID_exclude', nargs='+', metavar='int(s)', type=int,
                                 help='Specify exclude ID when processing ttem data, \
                                    this can also be done in config file')
+    subparser_ttem.add_argument('--resample', metavar='int', type=int,
+                                help='Specify resample factor when processing ttem data, \
+                                   this can also be done in config file')
+    subparser_ttem.add_argument('--reproject', metavar='str', type=str, help='Reproject ttemdata to a new crs,\
+                                e.g: EPSG:4326')
     subparser_lithology = subparser.add_parser('lithology')
     subparser_lithology.add_argument('lithology', metavar='PATH', help = 'Path to config file')
+    subparser_lithology.add_argument('--reproject', metavar='str', type=str, help='Reproject welllog data to a new crs')
+    subparser_lithology.add_argument('--resample', metavar='int', type=int, help='Resample welllog data')
     return parser
 
 def cmd_line_parse(iargs=None):
@@ -65,56 +73,99 @@ def cmd_line_parse(iargs=None):
         sys.exit(0)
     return inps
 
+def step_ttem(config, inps):
+    print('Step1: Process ttem')
+    if inps.get('layer_exclude'):
+        config['layer_exclude'] = inps['layer_exclude']
+    if inps.get('line_exclude'):
+        config['line_exclude'] = inps['line_exclude']
+    if inps.get('ID_exclude'):
+        config['ID_exclude'] = inps['ID_exclude']
+    if inps.get('resample'):
+        config['ttem_resample'] = inps['resample']
+    else:
+        config['ttem_resample'] = None
+    if inps.get('doi_path'):
+        config['doi_path'] = inps['doi_path']
+    if inps.get('reproject'):
+        config['ttem_reproject_crs'] = inps['reproject']
+    if Path(config['ttem_path']).is_file():
+        
+        ttem = process_ttem.ProcessTTEM(
+            fname = config['ttem_path'],
+            doi_path=config['doi_path'],
+            layer_exclude = config['layer_exclude'],
+            line_exclude = config['line_exclude'],
+            ID_exclude = config['ID_exclude'],
+            resample = config['ttem_resample']
+        )
+    else:
+        raise TypeError('TTEM file not found in {}'.format(config['ttem_path']))
+    if config['ttem_crs'] is not None:
+        ttem.set_crs(config['ttem_crs'])
+    if config['ttem_reproject_crs'] is not None:
+        ttem.reproject(config['ttem_reproject_crs'])
+    
+    ttem.summary().to_csv(config['deliver'].joinpath(Path(config['ttem_path']).stem + '_summary.csv'), index=False)
+    ttem.to_shp(config['deliver'].joinpath(Path(config['ttem_path']).stem + '.shp'))
+    ttem.data.to_csv(config['ttem_temp'].joinpath(Path(config['ttem_path']).stem+ '.csv'), index=False)
+    return ttem.data
 
-def main_process_ttem(config, 
-                      layer_exclude: list = None, 
-                      line_exclude: list = None, 
-                      ID_exclude: list = None, 
-                      resample: int = None):
-    if layer_exclude is not None:
-        layer_exclude_copy = layer_exclude
+
+def step_lithology(config, inps):
+    print('Step2: Process lithology')
+    if inps.get('reproject'):
+        config['lithology_reproject_crs'] = inps['reproject']
+    if inps.get('resample'):
+        config['lithology_resample'] = inps['resample']
+    if Path(config['well_path']).is_file():
+        lithology = process_well.ProcessWell(
+            fname = config['well_path'],
+            crs=config['lithology_crs']
+        )
     else:
-        print('found layer_exclude in config file')
-        layer_exclude_copy = config['layer_exclude']
-    if line_exclude is not None:
-        line_exclude_copy = line_exclude
-    else:
-        print('found line_exclude in config file')
-        line_exclude_copy = config['line_exclude']
-    if ID_exclude is not None:
-        ID_exclude_copy = ID_exclude
-    else:
-        print('found ID_exclude in config file')
-        ID_exclude_copy = config['ID_exclude']
-    if resample is not None:
-        resample_copy = resample
-    else:
-        print('found resample in config file')
-        resample_copy = config['resample']
-    ttem = process_ttem.ProcessTTEM(
-        fname = config['ttem_path'],
-        doi_path=config['doi_path'],
-        layer_exclude = layer_exclude_copy,
-        line_exclude = line_exclude_copy,
-        ID_exclude = ID_exclude_copy,
-        resample = resample_copy
-    )
-    ttem_data = ttem.data()
-    ttem_summary = ttem.summary()
-    ttem_summary = ttem_summary.to_csv(config['delivered_folder'] + Path(config['ttem_path']).stem + '_summary.csv')
-    ttem
-    
-    
-    
+        raise TypeError('Lithology file not found in {}'.format(config['well_path']))
+    if config['lithology_resample'] is not None:
+        lithology.resample(config['lithology_resample'])
+    if config['lithology_reproject_crs'] is not None:
+        lithology.reproject(config['lithology_reproject_crs'])
+    lithology.to_shp(config['deliver'].joinpath(Path(config['well_path']).stem + '.shp'))
+    lithology.data.to_csv(config['well_temp'].joinpath(Path(config['well_path']).stem+ '.csv'), index=False)
+    return lithology.data
+
+
 def main(iargs=None):
-    inps = vars(cmd_line_parse(iargs)) # parse to dict
+    inps = vars(cmd_line_parse(iargs)) # parse CLI input to dict
+    #########run entire ttem rock physics tranform process
+    if inps.get('config_path'):
+        print('Run entire ttem rock physics tranform process')
+        user_config = tools.parse_config(inps['config_path'])
+        tools.clean_output(Path(user_config['output']))
+        config = tools.create_dir_structure(user_config)
+        ttemdata = step_ttem(config, inps)
+        
+    if inps.get('force_clean'):
+        print('All result will be purged')
+        tools.clean_output()
+        
+    #########Step1: Process ttem
     if inps.get('ttem'):
-        print('Process ttem')
-        config = tools.parse_config(inps['ttem'])
-        ttem = main_process_ttem(config, )
+        user_config = tools.parse_config(inps['ttem'])
+        tools.clean_output(Path(user_config['output']))
+        config = tools.create_dir_structure(user_config)
+        step_ttem(config, inps)
+        
+    #########Step2: Process lithology
     if inps.get('lithology'):
-        print('process lithology')
-    return print(inps)
+        user_config = tools.parse_config(inps['lithology'])
+        tools.clean_output(Path(user_config['output']))
+        config = tools.create_dir_structure(user_config)
+        step_lithology(config, inps)
+        
+    #########Step3: Process gamma
+    #########Step4: Process water level
+    #########Step5: 
+
         
 '''
 class ProcessTTEM():

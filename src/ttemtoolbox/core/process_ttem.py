@@ -4,8 +4,10 @@
 # Created: 2023-11-17
 # Author: Jiawei Li
 import pathlib
+from pathlib import Path
 import re
 import pandas as pd
+import geopandas as gpd
 import numpy as np
 from ttemtoolbox.defaults.constants import XYZ_FILE_PATTERN, DOI_FILE_PATTERN
 from ttemtoolbox.utils.tools import skip_metadata
@@ -29,7 +31,7 @@ class ProcessTTEM:
     :return: A pandas dataframe that contains the filtered/processed tTEM data
     """
     def __init__(self,
-                 fname: (pathlib.PurePath, str, pd.DataFrame,list),
+                 fname: pathlib.PurePath |str |list,
                  doi_path: pathlib.PurePath| str| list = None,
                  layer_exclude: list = None,
                  line_exclude: list = None,
@@ -45,8 +47,8 @@ class ProcessTTEM:
         self.line_exclude = line_exclude
         self.ID_exclude = ID_exclude
         self.resample = resample
-        self.ttem_data = self.format_ttem()
-
+        self.data = self._format_ttem()
+        self.crs = self.data.crs
 
     @staticmethod
     def _read_ttem(fname: pathlib.PurePath| str) -> pd.DataFrame| dict:
@@ -89,7 +91,8 @@ class ProcessTTEM:
         for line in lines:
             match = pattern.search(line)
             if match:
-                crs = match.group(1)
+                crs = match.group()
+                crs = crs.upper()
                 break
             else:
                 crs = None
@@ -98,7 +101,7 @@ class ProcessTTEM:
 
     @staticmethod
     def _DOI(dataframe: pd.DataFrame,
-             doi_path: (pathlib.PurePath, str, list)) -> pd.DataFrame:
+             doi_path: pathlib.PurePath| str |list) -> pd.DataFrame:
         """
         Remove all tTEM data under DOI elevation limit with provided DOI file from Aarhus Workbench \n
         Version 11.18.2023 \n
@@ -106,10 +109,11 @@ class ProcessTTEM:
         :param doi_path: path-like contains DOI file, or a list of path that contains multiple DOI files
         :return: Filtered tTEM data above DOI
         """
-        from pathlib import Path
+        
         doi_concatlist = []
         match_index = []
         for i in doi_path:
+            print('Applying DOI {}.....'.format(Path(i).name))
             data = skip_metadata(i, DOI_FILE_PATTERN)
             tmp_doi_df = pd.DataFrame(data[1::], columns=data[0])
             doi_concatlist.append(tmp_doi_df)
@@ -124,6 +128,7 @@ class ProcessTTEM:
             try:
                 elevation = df_DOI.loc[(df_DOI['UTMX'] == name[0]) & (df_DOI['UTMY'] == name[1])]['Value'].values[0]
                 new_group = group[group['Elevation_Cell'] >= elevation]
+                
                 ttem_concatlist.append(new_group)
             except IndexError:
                 continue
@@ -176,7 +181,7 @@ class ProcessTTEM:
                   factor: int) -> pd.DataFrame:
         """
         This staticmethod is connected with format_ttem method, it converts the tTEM thickness from log to linear \
-        layers to constant thickness layers.\n
+        layers with a consistant layer thickness .\n
         Version 11.18.2023\n
         :param dataframe: Dataframe that contains the tTEM data
         :param factor: how thin your thickness should be divided, e.g. 10 means 1/10 m thickness
@@ -190,9 +195,17 @@ class ProcessTTEM:
         result = pd.concat(concatlist)
         result.reset_index(drop=True, inplace=True)
         return result
+    
+    @staticmethod
+    def _get_crs(fname: str | pathlib.PurePath) -> str:
+        try:
+            crs = ProcessTTEM._find_crs(fname[0])
+        except:
+            print('No CRS found in the file, set CRS to None, use set_crs method to assign a CRS.')
+            crs = None
+        return crs
 
-
-    def format_ttem(self):
+    def _format_ttem(self):
         """
         This is the core method of the class that read file under varies input circumstances, and return a \
         formatted dataframe that contains filtered tTEM data. \n
@@ -201,6 +214,7 @@ class ProcessTTEM:
         """
     # Read data under different input circumstances
         from pathlib import Path
+        crs = self._get_crs(self.fname)
         tmp_df = pd.DataFrame()
         if len(self.fname) == 0:
             raise ValueError("The input is empty!")
@@ -231,42 +245,114 @@ class ProcessTTEM:
         tmp_df = tmp_df.sort_values(by=['ID', 'Line_No','Layer_No'])
         tmp_df.reset_index(drop=True, inplace=True)
         tmp_df["Elevation_End"] = tmp_df["Elevation_Cell"].subtract(tmp_df["Thickness"])
-        self.ttem_data = tmp_df.copy()
-        return self.ttem_data
+        self.data = tmp_df.copy()
+        self.data.rename(columns={'UTMX': 'X', 'UTMY': 'Y'},inplace=True)
+        if crs is not None:
+            self.data = gpd.GeoDataFrame(self.data, 
+                                        geometry=gpd.points_from_xy(self.data['X'], self.data['Y']),
+                                        crs=crs)
+        else: 
+            self.data = gpd.GeoDataFrame(self.data, 
+                                        geometry=gpd.points_from_xy(self.data['X'], self.data['Y']))
+        return self.data
 
-    def data(self) -> pd.DataFrame:
-        return self.ttem_data
+    
 
-    def crs(self) -> str:
-        try:
-            crs = self._find_crs(self.fname[0])
-        except:
-            print('No CRS found in the file, set CRS to None.')
-            crs = None
-        return crs
-
-    def summary(self) -> pd.DataFrame:
+    def summary(self) -> gpd.GeoDataFrame:
         """
         This function generate a summary of the tTEM file which can be plot in the GIS contains all key information \
         about the tTEM
         :return: pd.DataFrame containing the summary of the tTEM info
         """
 
-        id_group = self.ttem_data.groupby('ID')
+        id_group = self.data.groupby('ID')
         agg_group = id_group.agg({'Depth_bottom': 'max',
                                   'Elevation_Cell': 'max',
                                   'Elevation_End': 'min',
                                   'Resistivity': ['min', 'max', 'mean'],
-                                  'UTMX': 'mean', 'UTMY': 'mean'})
+                                  'X': 'mean', 'Y': 'mean'})
         agg_group.columns = agg_group.columns.map('_'.join)
         agg_group.index.name = None
         agg_group['ID'] = agg_group.index
-        return agg_group
+        self.summary = agg_group
+        self.summary.reset_index(drop=True, inplace=True)
+        self.summary.rename(columns={'X_mean': 'X', 'Y_mean': 'Y'}, inplace=True)
+        return self.summary
+    
+    def set_crs(self, new_crs: str):
+        """
+        Assigns a new coordinate reference system (CRS) to the object.
+
+        Parameters:
+            new_crs (str): The new CRS to be assigned. It should be in the format 'EPSG:<code>',
+                           where <code> is the EPSG code of the CRS.
+
+        Returns:
+            str: The newly assigned CRS.
+
+        Raises:
+            ValueError: If the input CRS is not in the correct format.
+
+        Example:
+            >>> obj = ProcessTTEM(fname)
+            >>> obj.assign_crs('EPSG:4326')
+            The CRS is assigned to EPSG:4326
+            'EPSG:4326'
+        """
+        pattern = r'^EPSG:\d+$'
+        if bool(re.match(pattern, new_crs)):
+            self.data.set_crs(new_crs, inplace=True)
+            print('The CRS is assigned to {}'.format(new_crs))
+        else: 
+            raise ValueError("The input CRS is not valid, please use EPSG format, e.g. EPSG:4326")
+        return self.crs
+    
+    def reproject(self, new_crs: str):
+        """
+        Reprojects the data to a new coordinate reference system (CRS).
+
+        Parameters:
+            new_crs (str): The new CRS to reproject the data to.
+
+        Returns:
+            GeoDataFrame: The reprojected data as a GeoDataFrame.
+        """
+        
+        self.data = self.data.to_crs(new_crs)
+        self.crs = self.data.crs
+        self.data['X'] = self.data.geometry.x
+        self.data['Y'] = self.data.geometry.y
+        return self.data
+        
+        
+    def to_shp(self, output_filepath: str | pathlib.PurePath):
+        """
+        This method converts the tTEM data to a shapefile or other supported geospatial formats.\n
+        :param output_filepath: The path to save the output shapefile or geospatial file.
+        
+        """
+        ttem_gdf = gpd.GeoDataFrame(self.summary, 
+                                    geometry=gpd.points_from_xy(self.summary['X'], self.summary['Y']),
+                                    crs=self.crs)
+        if  Path(output_filepath).suffix.lower() == '.shp':
+            ttem_gdf.to_file(output_filepath, driver='ESRI Shapefile')
+            print('The output file is saved to {}'.format(Path(output_filepath).resolve()))
+        elif Path(output_filepath).suffix.lower() == '.gpkg':
+            ttem_gdf.to_file(output_filepath, driver='GPKG', layer=Path(self.fname[0]).stem)
+            print('The output file is saved to {}'.format(Path(output_filepath).resolve()))
+        elif Path(output_filepath).suffix.lower() == '.geojson':
+            ttem_gdf.to_file(output_filepath, driver='GeoJSON')
+            print('The output file is saved to {}'.format(Path(output_filepath).resolve()))
+        else: 
+            raise ValueError("The output file format is not supported, please use .shp, .gpkg, or .geojson")
+            
 
 
 if __name__ == "__main__":
     print('This is a module, please import it to use it.')
     import ttemtoolbox
+    from pathlib import Path
+    import geopandas as gpd
     from pathlib import Path
     workdir = Path.cwd()
     ttem_lslake = workdir.parent.parent.joinpath(r'data\PD22_I03_MOD.xyz')

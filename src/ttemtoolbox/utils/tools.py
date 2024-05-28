@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import pandas as pd
 import pathlib
+from pathlib import Path
 import re
 import shutil
 
@@ -45,10 +46,14 @@ def skip_metadata(fname: pathlib.PurePath | str,
 
 def type_convert(config_str: str) :
     config_str = config_str.strip()
+    if len(config_str) == 0:
+        return None
     if config_str.isdigit(): 
         return int(config_str)
     if config_str.replace('.', '', 1).isdigit():
         return float(config_str)
+    if config_str == 'None':
+        return None
     if config_str == 'T' or config_str == 'True':
         return True
     if config_str == 'F' or config_str == 'False':
@@ -57,6 +62,8 @@ def type_convert(config_str: str) :
         return float('nan')
     if config_str.startswith('"') and config_str.endswith('"'):
         return config_str.replace('"', '')
+    if config_str.startswith("'") and config_str.endswith("'"):
+        return config_str.replace("'", '')
     if config_str.replace('e', '', 1).isdigit():
         return int(float(config_str))
     if config_str.replace('e-', '', 1).isdigit():
@@ -89,18 +96,17 @@ def clean_output(output_folder: pathlib.PurePath, force=False):
     if force:
         shutil.rmtree(output_folder)
     if any(output_folder.joinpath('deliver').glob('*')):
-        userinput = input('Files under delivery folder, would you like to continue remove y/n？')
+        userinput = input('Files exist under delivery folder {}, would you like to overlap y/n？').format(output_folder.joinpath('deliver'))
         if userinput.lower() == 'y':
             shutil.rmtree(output_folder)
         else:
             return
             
         
-def create_dir_structure(output_folder: pathlib.PurePath) -> dict:
-    clean_output(output_folder)
-    temp_folder = output_folder.joinpath('temp')
+def create_dir_structure(config: dict) -> dict:
+    temp_folder = Path(config['output']).joinpath('temp')
     temp_folder.mkdir(parents=True, exist_ok=True)
-    deliver_folder = output_folder.joinpath('deliver')
+    deliver_folder = Path(config['output']).joinpath('deliver')
     deliver_folder.mkdir(parents=True, exist_ok=True)
     ttem_temp = temp_folder.joinpath('ttem_temp')
     well_temp = temp_folder.joinpath('well_temp')
@@ -110,12 +116,13 @@ def create_dir_structure(output_folder: pathlib.PurePath) -> dict:
     well_temp.mkdir(parents=True, exist_ok=True)
     gamma_temp.mkdir(parents=True, exist_ok=True)
     water_level_temp.mkdir(parents=True, exist_ok=True)
-    file_structure_dict = {'deliver_folder':deliver_folder,
+    file_structure_dict = {'deliver': deliver_folder,
                            'ttem_temp':ttem_temp,
                            'well_temp':well_temp,
                            'gamma_temp':gamma_temp,
                            'water_level_temp':water_level_temp}
-    return file_structure_dict
+    new_config = {**config, **file_structure_dict}
+    return new_config
 
 
     

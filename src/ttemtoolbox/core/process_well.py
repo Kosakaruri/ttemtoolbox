@@ -9,10 +9,9 @@ import re
 import requests
 import numpy as np
 import pandas as pd
+import geopandas as gpd
 from pyproj import Transformer
-import sys
 import xarray
-import datetime
 from itertools import compress
 from pathlib import Path
 from ttemtoolbox.defaults import constants
@@ -29,29 +28,20 @@ class ProcessWell:
             similiar, keyword(s) can be modified under tTEM_toolbox/defaults/constants.py.\
     """
     def __init__(self,
-                 lithologyfname: (str, pathlib.PurePath, list, pd.DataFrame),
-                 crs_from: str = 'epsg:4326',
-                 crs_to: str = 'epsg:32612'):
-        self.well_log_upscale = None
-        if isinstance(lithologyfname, (str, pathlib.PurePath)):
-            self.fname = [lithologyfname]
-            print('reading lithology from {}'.format(Path(lithologyfname).name))
-        elif isinstance(lithologyfname, pd.DataFrame):
-            self.well_log = lithologyfname
-            print('Will reuse cached well log in memory')
-        elif isinstance(lithologyfname, list):
-            if all([isinstance(i, pd.DataFrame) for i in lithologyfname]):
-                self.well_log = lithologyfname
-                print('Input as a list of dataframe, will reuse cached Dataframe')
-            if all([isinstance(i, (str, pathlib.PurePath)) for i in lithologyfname]):
-                self.fname = lithologyfname
-            print('reading lithology from {}'.format([Path(i).name for i in lithologyfname]))
-            if len(lithologyfname) == 0:
+                 fname: str| pathlib.PurePath | list,
+                 crs: str = 'epsg:4326'):
+        self.data_upscale = None
+        if isinstance(fname, str | pathlib.PurePath):
+            self.fname = [fname]
+            print('reading lithology from {}'.format(Path(fname).name))
+        elif isinstance(fname, list):
+            if len(fname) == 0:
                 raise ValueError('Input file path is empty')
-        self.crs_from = crs_from
-        self.crs_to = crs_to
-        self.well_log = self.format_well()
-        self.data()
+            else:
+                self.fname = fname
+                print('reading lithology from {}'.format([Path(f).name for f in fname]))
+        self.crs= crs
+        self.data = self._format_well()
 
 
 
@@ -79,7 +69,7 @@ class ProcessWell:
             return file_list
 
     @staticmethod
-    def _format_input(fname:(str, pathlib.PurePath, list, pd.DataFrame)) -> list:
+    def _format_input(fname:str| pathlib.PurePath| list| pd.DataFrame) -> list:
         """
         This will format input file path(s) to a list of pandas dataframe (read from csv) and/or dict that includes all sheets in the excel\
          file, each sheet were pandas dataframe. If input is a pandas dataframe, it will return the input dataframe in a list.
@@ -90,14 +80,8 @@ class ProcessWell:
             fname = [fname]
         elif isinstance(fname, list):
             pass
-        elif isinstance(fname, pd.DataFrame):
-            print('Will reuse cached Dataframe')
-            return [fname]
-        elif all([isinstance(i, pd.DataFrame) for i in fname]):
-            print('Input as alist of dataframe, will reuse cached Dataframe')
-            return fname
         else:
-            raise TypeError('Input must be one or a list of string, pathlib.PurePath object, pandas dataframe')
+            raise TypeError('Input must be one or a list of string, pathlib.PurePath objects')
         export_list = []
         for path in fname:
             file_list = ProcessWell._find_all_readable(path)
@@ -110,7 +94,7 @@ class ProcessWell:
         result = [item for sublist in export_list for item in sublist]
         return result
     @staticmethod
-    def _read_lithology(fname: (str, pathlib.PurePath, list, pd.DataFrame)):
+    def _read_lithology(fname: str| pathlib.PurePath |list| pd.DataFrame) -> pd.DataFrame:
         """
         Try to read lithology sheet from Excel file with tab name similar to 'Lithology', or csv file contains lithology data.
         :param fname: one or a list of string, pathlib.PurePath object, pandas dataframe
@@ -120,22 +104,22 @@ class ProcessWell:
         lithology_list = []
         for single_file in result:
             if isinstance(single_file, dict):  # which means it is an Excel file
-                match_sheet_name = utils.tools.keyword_search(single_file, constants.LITHOLOGY_SHEET_NAMES)
+                match_sheet_name = tools.keyword_search(single_file, constants.LITHOLOGY_SHEET_NAMES)
                 if len(match_sheet_name) == 0:
                     continue
                 lithology_sheet = single_file[match_sheet_name[0]]
                 lithology_list.append(lithology_sheet)
             if isinstance(single_file, pd.DataFrame):  # which means it is a csv file
-                match_column_lithology = utils.tools.keyword_search(single_file, constants.LITHOLOGY_COLUMN_NAMES_KEYWORD)
+                match_column_lithology = tools.keyword_search(single_file, constants.LITHOLOGY_COLUMN_NAMES_KEYWORD)
                 if match_column_lithology > 0:
                     lithology_sheet = single_file
                     lithology_list.append(lithology_sheet)
         concat_list = []
         for sheet in lithology_list:
-            match_column_lithology = utils.tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_KEYWORD)
-            match_column_bore = utils.tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_BORE)
-            match_column_depth_top = utils.tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_DEPTH_TOP)
-            match_column_depth_bottom = utils.tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_DEPTH_BOTTOM)
+            match_column_lithology = tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_KEYWORD)
+            match_column_bore = tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_BORE)
+            match_column_depth_top = tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_DEPTH_TOP)
+            match_column_depth_bottom = tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_DEPTH_BOTTOM)
 
             lithology = pd.DataFrame(sheet[match_column_lithology[0]])
             lithology.columns = ['Keyword']
@@ -150,7 +134,7 @@ class ProcessWell:
         return result
 
     @staticmethod
-    def _read_spatial(fname: (str, pathlib.PurePath)):
+    def _read_spatial(fname: str| pathlib.PurePath) -> pd.DataFrame:
         """
         Similiar to _read_lithology, but read location sheet from Excel file with tab name similar to 'Location', \
         or csv file contains location data.
@@ -185,25 +169,9 @@ class ProcessWell:
         result = pd.concat(concat_list)
         return result
 
-    @staticmethod
-    def _coord_transform(lat: (float, list),
-                         long: (float, list),
-                         crs_from: str = 'espg:4326',
-                         crs_to: str= 'espg:32612'):
-        """
-        Transform coordinate from one crs to another, the default coordinate is assume to be WGS84 (epsg:4326)
-        :param lat: The column name or point of latitude , usually 'Latitude', 'lat', 'LAT', 'Y', 'y'
-        :param long: The column name or point of longitude, usually 'Longitude', 'lon', 'LON', 'X', 'x'
-        :param crs_from: The crs of the input coordinate, e.g. 'epsg:4326'
-        :param crs_to: The crs of the output coordinate, e.g. 'epsg:32612'
-        :return:
-        """
-        transformer = Transformer.from_crs(crs_from, crs_to)
-        x, y = transformer.transform(lat, long)
-        return x, y
 
     @staticmethod
-    def _fill(group, factor=100):
+    def _fill(group, factor=100) -> pd.DataFrame:
         newgroup = group.loc[group.index.repeat(group.Thickness * factor)]
         mul_per_gr = newgroup.groupby('Elevation_top').cumcount()
         newgroup['Elevation_top'] = newgroup['Elevation_top'].subtract(mul_per_gr * 1 / factor)
@@ -228,10 +196,8 @@ class ProcessWell:
             group_location = location[location['Bore'] == name]
             if group_location.empty:
                 continue
-            group['Latitude'] = group_location['Latitude'].iloc[0]
-            group['Longitude'] = group_location['Longitude'].iloc[0]
-            group['X'] = group_location['X'].iloc[0]
-            group['Y'] = group_location['Y'].iloc[0]
+            group['Y'] = group_location['Latitude'].iloc[0]
+            group['X'] = group_location['Longitude'].iloc[0]
             group['Z'] = group_location['Elevation'].iloc[0]
             group['Elevation_top'] = group['Z'].subtract(group['Depth_top'])
             group['Elevation_bottom'] = group['Z'].subtract(group['Depth_bottom'])
@@ -241,7 +207,7 @@ class ProcessWell:
 
 
     @staticmethod
-    def assign_keyword_as_value(welllog_df):
+    def _assign_keyword_as_value(welllog_df) -> pd.DataFrame:
         conditionlist = [
             (welllog_df["Keyword"] == "fine grain"),
             (welllog_df["Keyword"] == "mix grain"),
@@ -252,79 +218,67 @@ class ProcessWell:
         return welllog_df
 
 
-    def format_well(self):
+    def _format_well(self) -> gpd.GeoDataFrame:
         lithology = self._read_lithology(self.fname)
         location = self._read_spatial(self.fname)
-        location['X'], location['Y'] = self._coord_transform(location['Latitude'],
-                                                                   location['Longitude'],
-                                                                   self.crs_from,
-                                                                   self.crs_to)
-        self.well_log = self._lithology_location_connect(lithology, location)
-        self.well_log = ProcessWell.assign_keyword_as_value(self.well_log)
-        return self.well_log
+        self.data = self._lithology_location_connect(lithology, location)
+        self.data = ProcessWell._assign_keyword_as_value(self.data)
+        gdf = gpd.GeoDataFrame(self.data, geometry=gpd.points_from_xy(self.data['X'], self.data['Y']), 
+                               crs=self.crs)
+        self.data = gdf
+        return self.data
 
-    def data(self):
-        return self.well_log
+    def reproject(self, crs: str) -> gpd.GeoDataFrame:
+        """
+        Reproject the data to a given coordinate system.
 
-    def upscale(self, scale=1):
-        group = self.well_log.groupby('Bore')
-        self.well_log_upscale = group.apply(lambda x:ProcessWell._fill(x, scale))
-        self.well_log_upscale.reset_index(drop=True, inplace=True)
-        return self.well_log_upscale
+        Parameters:
+        - crs (str): The coordinate system to reproject the data to.
 
-def _format_well(welllog, upscale=1):
-    if isinstance(welllog, pd.DataFrame):
-        print('Will reuse cached well log in memory')
-        return welllog
-    def fill(group, factor=100):
-        newgroup = group.loc[group.index.repeat(group.Thickness * factor)]
-        mul_per_gr = newgroup.groupby('Elevation').cumcount()
-        newgroup['Elevation'] = newgroup['Elevation'].subtract(mul_per_gr * 1 / factor)
-        newgroup['Depth1_m'] = newgroup['Depth1_m'].subtract(mul_per_gr * 1 / factor)
-        newgroup['Depth2_m'] = newgroup['Depth1_m'].add(1 / factor)
-        newgroup['Elevation_End'] = newgroup['Elevation'].subtract(1 / factor)
-        newgroup['Thickness'] = 1 / factor
-        return newgroup
-    transformer = Transformer.from_crs('epsg:4326', 'epsg:32612')
-    lithology = pd.read_excel(welllog, sheet_name='Lithology').drop_duplicates()
-    location = pd.read_excel(welllog, sheet_name='Location').drop_duplicates()
-    lithology['Thickness'] = lithology['Depth2_m'].subtract(lithology['Depth1_m'])
-    lithology_group = lithology.groupby('Bore')
-    concatlist = []
-    bar = Bar('Formating well logs', max=len(list(lithology_group.groups.keys())))
-    bar.check_tty = False
-    for name, group in lithology_group:
-        group_location = location[location['Bore'] == name]
-        if group_location.empty:
-            group_location = location[location['Bore'] == name.strip()]
-            if group_location.empty:
-                continue
-        long = group_location['X'].iloc[0]
-        lat = group_location['Y'].iloc[0]
-        x, y = transformer.transform(lat, long)
-        group['Elevation'] = group_location['Z'].iloc[0]
-        group['Elevation'] = group['Elevation'].subtract(group['Depth1_m'])
-        group['UTMX'] = x
-        group['UTMY'] = y
-        group['Thickness'] = group['Depth2_m'].subtract(group['Depth1_m'])
-        if upscale == 1:
-            newgroup = group
-        else:
-            newgroup = fill(group, factor=upscale)
-        concatlist.append(newgroup)
-        bar.next()
-    upscalled_well = pd.concat(concatlist)
-    upscalled_well.reset_index(drop=True, inplace=True)
-    conditionlist = [
-        (upscalled_well["Keyword"] == "fine grain"),
-        (upscalled_well["Keyword"] == "mix grain"),
-        (upscalled_well["Keyword"] == "coarse grain")
-    ]
-    choicelist = [1, 2, 3]
-    upscalled_well["Keyword_n"] = np.select(conditionlist, choicelist)
-    upscalled_well['Bore'] = upscalled_well['Bore'].str.strip()
-    bar.finish()
-    return upscalled_well
+        Returns:
+        - geopandas.GeoDataFrame: The reprojected data.
+        """
+        self.data = self.data.to_crs(crs)
+        self.crs = crs
+        self.data['X'] = self.data.geometry.x
+        self.data['Y'] = self.data.geometry.y
+        return self.data
+    
+    
+    def resample(self, scale: int) -> gpd.GeoDataFrame:
+        """
+        Upscales the data by a given scale factor.
+
+        Parameters:
+        - scale (int): The scale factor to upscale the data by.
+
+        Returns:
+        - geopandas.GeoDataFrame: The upscaled data.
+        """
+        group = self.data.groupby('Bore')
+        self.data_upscale = group.apply(lambda x:ProcessWell._fill(x, scale))
+        self.data_upscale.reset_index(drop=True, inplace=True)
+        return self.data_upscale
+
+    def to_shp(self, output_filepath: str| pathlib.PurePath) -> None:
+        """
+        Save the data to a shapefile.
+
+        Parameters:
+        - path (str | pathlib.PurePath): The path to save the shapefile to.
+        """
+        if  Path(output_filepath).suffix.lower() == '.shp':
+            self.data.to_file(output_filepath, driver='ESRI Shapefile')
+            print('The output file is saved to {}'.format(Path(output_filepath).resolve()))
+        elif Path(output_filepath).suffix.lower() == '.gpkg':
+            self.data.to_file(output_filepath, driver='GPKG', layer=Path(self.fname[0]).stem)
+            print('The output file is saved to {}'.format(Path(output_filepath).resolve()))
+        elif Path(output_filepath).suffix.lower() == '.geojson':
+            self.data.to_file(output_filepath, driver='GeoJSON')
+            print('The output file is saved to {}'.format(Path(output_filepath).resolve()))
+        else: 
+            raise ValueError("The output file format is not supported, please use .shp, .gpkg, or .geojson")
+
 
 def dl_usgs_water(wellname):
     workdir = os.getcwd()

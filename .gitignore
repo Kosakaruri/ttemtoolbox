@@ -21,3 +21,17 @@ test/maintest.py
 
 
 test/maintest.py
+test/ttem/deliver/PD1_I01_MOD_summary.csv
+test/ttem/deliver/PD1_I01_MOD.cpg
+test/ttem/deliver/PD1_I01_MOD.csv
+test/ttem/deliver/PD1_I01_MOD.dbf
+test/ttem/deliver/PD1_I01_MOD.prj
+test/ttem/deliver/PD1_I01_MOD.shp
+test/ttem/deliver/PD1_I01_MOD.shx
+abc.gpkg
+test/ttem/deliver/Well_log.cpg
+test/ttem/deliver/Well_log.dbf
+test/ttem/deliver/Well_log.prj
+test/ttem/deliver/Well_log.shp
+test/ttem/deliver/Well_log.shx
+test/ttem/temp/well_temp/Well_log.csv
