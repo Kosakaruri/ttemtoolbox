@@ -1,0 +1,54 @@
+############################################
+# This is the config file for ttemtoolbox  #
+############################################
+# Version 05.18.2024
+# Author: Jiawei Li
+############################################
+# Path to tTEM data file 
+## File exported from Aarhus workbench (only xyz file is currently supported)
+## e.g. ttem_path = '~/ttemproject/export.xyz'
+ttem_path = '/home/jldz9/ttemtoolbox/data/PD1_I01_MOD.xyz'
+# Path to DOI file
+## Depth of investigation file exported from Aarhus workbench
+## e.g. doi = '~/ttemproject/doi.xyz'
+doi_path = '/home/jldz9/ttemtoolbox/data/DOID1_DOIStaE.xyz'
+# Path to well log file
+## Well log contains lithology information, see example well log file in data folder, support csv and xls, xlsx
+## e.g. well_path = '~/ttemproject/welllog.xlsx'
+well_path = '/home/jldz9/ttemtoolbox/data/Well_log.xlsx'
+# Path to borehole gamma log file
+## Gamma log file contains borehole gamma data, see example gamma log in data folder
+## e.g. gamma_path = '~/ttemproject/gamma.xlsx'
+gamma_path = '~/gamma.xlsx'
+# Output directory
+## Provide path to the output directory 
+## e.g. output = '~/output'
+output = '/home/jldz9/ttemtoolbox/test/ttem'
+############### tTEM related config
+layer_exclude = 
+line_exclude = 
+ID_exclude = 
+ttem_resample =  
+ttem_unit = 'meter'
+# Resample the tTEM from log depth to linear depth interval, default is None
+ttem_crs =  
+# This should contianed in the tTEM xyz file. If not, please provide the crs 
+ttem_reproject_crs = 'epsg:32612'
+# Reproject the tTEM data to a new crs, default is None
+############### DOI related config
+doi_unit = 'meter'  
+############### Lithology welllog related config
+lithology_crs = 'epsg:4326'
+lithology_reproject_crs = 'epsg:32612'
+lithology_resample =  100
+lithology_unit = 'feet'
+# Resample the well log from log depth to linear depth interval, default is None
+############### Gamma log related config
+############### Water table related config
+USGS_well_NO = ['375033112561101', '375006112554801']
+water_table_unit = 'feet'
+############### ttem well connection related config 
+search_radius = 500
+############### Rock Physics transform related config 
+# method include 'bootstrap', 'similiarity', 'pearson'
+method = 'bootstrap'
