@@ -84,7 +84,9 @@ positional arguments:
 options:
   -h, --help  show this help message and exit
 ```
+## Python usage
 
+Check [API document](https://jldz9.github.io/ttemtoolbox/)
 
 
 
