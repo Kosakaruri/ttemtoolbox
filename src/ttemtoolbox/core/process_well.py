@@ -11,7 +11,6 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 from pyproj import Transformer
-import xarray
 from itertools import compress
 from pathlib import Path
 from ttemtoolbox.defaults import constants
@@ -29,8 +28,8 @@ class ProcessWell:
     """
     def __init__(self,
                  fname: str| pathlib.PurePath | list,
-                 crs: str = 'epsg:4326'):
-        self.data_upscale = None
+                 crs: str = 'epsg:4326',
+                 unit: str = 'meter'):
         if isinstance(fname, str | pathlib.PurePath):
             self.fname = [fname]
             print('reading lithology from {}'.format(Path(fname).name))
@@ -40,9 +39,14 @@ class ProcessWell:
             else:
                 self.fname = fname
                 print('reading lithology from {}'.format([Path(f).name for f in fname]))
-        self.crs= crs
+        if unit == 'feet': 
+            self.unitconvert = 1
+        elif unit == 'meter':
+            self.unitconvert = 3.28084
+        self.crs = crs
         self.data = self._format_well()
-
+        self.crs = self.data.crs
+        
 
 
     @staticmethod
@@ -94,7 +98,7 @@ class ProcessWell:
         result = [item for sublist in export_list for item in sublist]
         return result
     @staticmethod
-    def _read_lithology(fname: str| pathlib.PurePath |list| pd.DataFrame) -> pd.DataFrame:
+    def _read_lithology(fname: str| pathlib.PurePath |list| pd.DataFrame, mtoft=1) -> pd.DataFrame:
         """
         Try to read lithology sheet from Excel file with tab name similar to 'Lithology', or csv file contains lithology data.
         :param fname: one or a list of string, pathlib.PurePath object, pandas dataframe
@@ -124,8 +128,8 @@ class ProcessWell:
             lithology = pd.DataFrame(sheet[match_column_lithology[0]])
             lithology.columns = ['Keyword']
             lithology['Bore'] = sheet[match_column_bore[0]]
-            lithology['Depth_top'] = sheet[match_column_depth_top[0]]
-            lithology['Depth_bottom'] = sheet[match_column_depth_bottom[0]]
+            lithology['Depth_top'] = sheet[match_column_depth_top[0]]/mtoft
+            lithology['Depth_bottom'] = sheet[match_column_depth_bottom[0]]/mtoft
             lithology['Thickness'] = lithology['Depth_bottom'].subtract(lithology['Depth_top'])
 
             concat_list.append(lithology)
@@ -134,7 +138,7 @@ class ProcessWell:
         return result
 
     @staticmethod
-    def _read_spatial(fname: str| pathlib.PurePath) -> pd.DataFrame:
+    def _read_spatial(fname: str| pathlib.PurePath, mtoft=1) -> pd.DataFrame:
         """
         Similiar to _read_lithology, but read location sheet from Excel file with tab name similar to 'Location', \
         or csv file contains location data.
@@ -164,7 +168,7 @@ class ProcessWell:
             location.columns = ['Latitude']
             location['Longitude'] = sheet[match_column_lon[0]]
             location['Bore'] = sheet['Bore']
-            location['Elevation'] = sheet[match_column_elevation[0]]
+            location['Elevation'] = sheet[match_column_elevation[0]]/mtoft
             concat_list.append(location)
         result = pd.concat(concat_list)
         return result
@@ -219,8 +223,8 @@ class ProcessWell:
 
 
     def _format_well(self) -> gpd.GeoDataFrame:
-        lithology = self._read_lithology(self.fname)
-        location = self._read_spatial(self.fname)
+        lithology = self._read_lithology(self.fname, self.unitconvert)
+        location = self._read_spatial(self.fname, self.unitconvert)
         self.data = self._lithology_location_connect(lithology, location)
         self.data = ProcessWell._assign_keyword_as_value(self.data)
         gdf = gpd.GeoDataFrame(self.data, geometry=gpd.points_from_xy(self.data['X'], self.data['Y']), 
@@ -256,10 +260,24 @@ class ProcessWell:
         - geopandas.GeoDataFrame: The upscaled data.
         """
         group = self.data.groupby('Bore')
-        self.data_upscale = group.apply(lambda x:ProcessWell._fill(x, scale))
-        self.data_upscale.reset_index(drop=True, inplace=True)
-        return self.data_upscale
-
+        self.data = group.apply(lambda x:ProcessWell._fill(x, scale))
+        self.data.reset_index(drop=True, inplace=True)
+        print('resampling lithology to {} '.format(1/scale))
+        return self.data
+    def summary(self):
+        groups = self.data.groupby('Bore')
+        agg_group = id_group.agg({'Depth_bottom': 'max',
+                                  'Elevation_Cell': 'max',
+                                  'Elevation_End': 'min',
+                                  'Resistivity': ['min', 'max', 'mean'],
+                                  'X': 'mean', 'Y': 'mean'})
+        agg_group.columns = agg_group.columns.map('_'.join)
+        agg_group.index.name = None
+        agg_group['ID'] = agg_group.index
+        self.summary = agg_group
+        self.summary.reset_index(drop=True, inplace=True)
+        self.summary.rename(columns={'X_mean': 'X', 'Y_mean': 'Y'}, inplace=True)
+        return self.summary
     def to_shp(self, output_filepath: str| pathlib.PurePath) -> None:
         """
         Save the data to a shapefile.
@@ -267,6 +285,7 @@ class ProcessWell:
         Parameters:
         - path (str | pathlib.PurePath): The path to save the shapefile to.
         """
+        
         if  Path(output_filepath).suffix.lower() == '.shp':
             self.data.to_file(output_filepath, driver='ESRI Shapefile')
             print('The output file is saved to {}'.format(Path(output_filepath).resolve()))

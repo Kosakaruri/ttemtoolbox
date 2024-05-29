@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-import pandas as pd
-import pathlib
 from ttemtoolbox import process_ttem, process_gamma, process_well, process_water, lithology_connect
 from ttemtoolbox import tools
 from ttemtoolbox import __version__
@@ -10,7 +8,6 @@ import shutil
 import sys
 import geopandas as gpd
 import pandas as pd
-#import concurrent.
 
 
 def create_parser():
@@ -43,10 +40,12 @@ def create_parser():
                                    this can also be done in config file')
     subparser_ttem.add_argument('--reproject', metavar='str', type=str, help='Reproject ttemdata to a new crs,\
                                 e.g: EPSG:4326')
+    subparser_ttem.add_argument('--unit', metavar='str', help='Use "meter" or "feet", default is meter')
     subparser_lithology = subparser.add_parser('lithology')
     subparser_lithology.add_argument('lithology', metavar='PATH', help = 'Path to config file')
     subparser_lithology.add_argument('--reproject', metavar='str', type=str, help='Reproject welllog data to a new crs')
     subparser_lithology.add_argument('--resample', metavar='int', type=int, help='Resample welllog data')
+    subparser_lithology.add_argument('--unit', metavar='str', help='"meter" or "feet", default is meter')
     subparser_water = subparser.add_parser('water')
     subparser_water.add_argument('water', metavar='PATH', help = 'Path to config file')
     subparser_water.add_argument('-w','--well_no', metavar='str[s]', help='Download specific well number')
@@ -76,6 +75,7 @@ def cmd_line_parse(iargs=None):
         for file in data_files:
             shutil.copy(file, copypath)
         sys.exit(0)
+
     return inps
 
 def step_ttem(config: dict, inps: dict) -> gpd.GeoDataFrame:
@@ -94,6 +94,9 @@ def step_ttem(config: dict, inps: dict) -> gpd.GeoDataFrame:
         config['doi_path'] = inps['doi_path']
     if inps.get('reproject'):
         config['ttem_reproject_crs'] = inps['reproject']
+    if inps.get('unit'):
+        config['ttem_unit'] = inps['unit']
+
     if Path(config['ttem_path']).is_file():
         
         ttem = process_ttem.ProcessTTEM(
@@ -102,7 +105,8 @@ def step_ttem(config: dict, inps: dict) -> gpd.GeoDataFrame:
             layer_exclude = config['layer_exclude'],
             line_exclude = config['line_exclude'],
             ID_exclude = config['ID_exclude'],
-            resample = config['ttem_resample']
+            resample = config['ttem_resample'],
+            unit = config['ttem_unit']
         )
     else:
         raise TypeError('TTEM file not found in {}'.format(config['ttem_path']))
@@ -123,10 +127,13 @@ def step_lithology(config: dict, inps: dict)-> gpd.GeoDataFrame:
         config['lithology_reproject_crs'] = inps['reproject']
     if inps.get('resample'):
         config['lithology_resample'] = inps['resample']
+    if inps.get('unit'):
+        config['lithology_unit'] = inps['unit']
     if Path(config['well_path']).is_file():
         lithology = process_well.ProcessWell(
             fname = config['well_path'],
-            crs=config['lithology_crs']
+            crs=config['lithology_crs'],
+            unit = config['lithology_unit']
         )
     else:
         raise TypeError('Lithology file not found in {}'.format(config['well_path']))
@@ -163,21 +170,23 @@ def step_water(config : dict, inps: dict) -> tuple:
     return water, meta
 
 
-def step_connect(config: dict, inps:dict, ttem: gpd.GeoDataFrame, lithology: gpd.GeoDataFrame):
-    if not ttem and lithology:
+def step_connect(config: dict, inps:dict, 
+                 ttem: gpd.GeoDataFrame = None, 
+                 lithology: gpd.GeoDataFrame = None):
+    if ttem is None and lithology is None:
         ttemlist = Path(config['ttem_temp']).glob('*.csv')
         temp_ttem = pd.concat([pd.read_csv(file) for file in ttemlist])
         ttem =  gpd.GeoDataFrame(temp_ttem, geometry=gpd.points_from_xy(temp_ttem['X'], temp_ttem['Y']), 
                                 crs=config['ttem_reproject_crs'])
-        lithologylist = Path(config['well_tem']).glob('*.csv')
+        lithologylist = Path(config['well_temp']).glob('*.csv')
         temp_lithology = pd.concat([pd.read_csv(file) for file in lithologylist])
         lithology = gpd.GeoDataFrame(temp_lithology, geometry=gpd.points_from_xy(temp_lithology['X'], temp_lithology['Y']), 
                                 crs=config['lithology_reproject_crs'])
     matched_ttem, matched_lithology = lithology_connect.select_closest(ttem, lithology,
                                                                        search_radius = config['search_radius'])
-    
-        
-    return
+    stitched = lithology_connect.ttem_well_connect(matched_ttem, matched_lithology)
+    stitched.to_csv(config['deliver'].joinpath('_ttem_well_connect.csv'))
+    return stitched
     
 def main(iargs=None):
     inps = vars(cmd_line_parse(iargs)) # parse CLI input to dict
@@ -216,7 +225,12 @@ def main(iargs=None):
         tools.clean_output(Path(user_config['output']))
         config = tools.create_dir_structure(user_config)
         step_water(config, inps)
-    #########Step5: 
+    #########Step5: ttem well connect
+    if inps.get('connect'):
+        user_config = tools.parse_config(inps['connect'])
+        tools.clean_output(Path(user_config['output']))
+        config = tools.create_dir_structure(user_config)
+        step_connect(config, inps)
 
         
 '''

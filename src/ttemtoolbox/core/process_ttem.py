@@ -36,11 +36,16 @@ class ProcessTTEM:
                  layer_exclude: list = None,
                  line_exclude: list = None,
                  ID_exclude: list = None,
-                 resample: int = None):
+                 resample: int = None,
+                 unit: str = 'meter'):
         if not isinstance(fname, list):
             fname = [fname]
         if not isinstance(doi_path, list) and doi_path:
             doi_path = [doi_path]
+        if unit == 'meter':
+            self.unitconvert = 1
+        elif unit == 'feet':
+            self.unitconvert = 3.28084
         self.fname = fname
         self.doi_path = doi_path
         self.layer_exclude = layer_exclude
@@ -51,7 +56,7 @@ class ProcessTTEM:
         self.crs = self.data.crs
 
     @staticmethod
-    def _read_ttem(fname: pathlib.PurePath| str) -> pd.DataFrame| dict:
+    def _read_ttem(fname: pathlib.PurePath| str, mtoft=1) -> pd.DataFrame| dict:
         """
         This function read tTEM data from .xyz file, and return a formatted dataframe that contains all the tTEM data. \n
         Version 11.18.2023 \n
@@ -75,6 +80,10 @@ class ProcessTTEM:
                                 'Thickness_STD': 'float64'
                                 })
         df = df[~(df['Thickness_STD'] == float(9999))]
+        df['Elevation_Cell'] = df['Elevation_Cell']/mtoft
+        df['Depth_top'] = df['Depth_top']/mtoft
+        df['Depth_bottom'] = df['Depth_bottom']/mtoft
+        df['Thickness'] = df['Thickness']/mtoft
         return df
     
     @staticmethod
@@ -101,7 +110,8 @@ class ProcessTTEM:
 
     @staticmethod
     def _DOI(dataframe: pd.DataFrame,
-             doi_path: pathlib.PurePath| str |list) -> pd.DataFrame:
+             doi_path: pathlib.PurePath| str |list,
+             mtoft=1) -> pd.DataFrame:
         """
         Remove all tTEM data under DOI elevation limit with provided DOI file from Aarhus Workbench \n
         Version 11.18.2023 \n
@@ -122,6 +132,7 @@ class ProcessTTEM:
                                 'UTMY': 'float64',
                                 'Value': 'float64'
                                 })
+        df_DOI['Value'] = df_DOI['Value']/mtoft
         df_group = dataframe.groupby(['UTMX', 'UTMY'])
         ttem_concatlist = []
         for name, group in df_group:
@@ -221,7 +232,7 @@ class ProcessTTEM:
         if isinstance(self.fname[0], (str, pathlib.PurePath)):
             concatlist = []
             for i in self.fname:
-                tmp_df = self._read_ttem(i)
+                tmp_df = self._read_ttem(i, self.unitconvert)
                 concatlist.append(tmp_df)
                 print("Reading data from file {}...".format(Path(i).name))
             tmp_df = pd.concat(concatlist)

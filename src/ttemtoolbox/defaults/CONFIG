@@ -24,26 +24,31 @@ gamma_path = '~/gamma.xlsx'
 ## Provide path to the output directory 
 ## e.g. output = '~/output'
 output = '/home/jldz9/ttemtoolbox/test/ttem'
-###############tTEM  related config
+############### tTEM related config
 layer_exclude = 
 line_exclude = 
 ID_exclude = 
 ttem_resample =  
+ttem_unit = 'meter'
 # Resample the tTEM from log depth to linear depth interval, default is None
 ttem_crs =  
 # This should contianed in the tTEM xyz file. If not, please provide the crs 
 ttem_reproject_crs = 'epsg:32612'
-# Reproject the tTEM data to a new crs, default is None 
-###############Lithology welllog related config
+# Reproject the tTEM data to a new crs, default is None
+############### DOI related config
+doi_unit = 'meter'  
+############### Lithology welllog related config
 lithology_crs = 'epsg:4326'
 lithology_reproject_crs = 'epsg:32612'
-lithology_resample =  
+lithology_resample =  100
+lithology_unit = 'feet'
 # Resample the well log from log depth to linear depth interval, default is None
-###############Gamma log related config
-###############Water table related config
+############### Gamma log related config
+############### Water table related config
 USGS_well_NO = ['375033112561101', '375006112554801']
-###############ttem well connection related config 
+water_table_unit = 'feet'
+############### ttem well connection related config 
 search_radius = 500
-###############Rock Physics transform related config 
+############### Rock Physics transform related config 
 # method include 'bootstrap', 'similiarity', 'pearson'
 method = 'bootstrap'
