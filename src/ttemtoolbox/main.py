@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-import numpy as np
 import pandas as pd
-import xarray as xr
 import pathlib
-from ttemtoolbox import process_ttem, process_gamma, process_well, process_water
+from ttemtoolbox import process_ttem, process_gamma, process_well, process_water, lithology_connect
 from ttemtoolbox import tools
 from ttemtoolbox import __version__
 from pathlib import Path
 import argparse
 import shutil
 import sys
+import geopandas as gpd
+import pandas as pd
 #import concurrent.
 
 
@@ -50,6 +50,8 @@ def create_parser():
     subparser_water = subparser.add_parser('water')
     subparser_water.add_argument('water', metavar='PATH', help = 'Path to config file')
     subparser_water.add_argument('-w','--well_no', metavar='str[s]', help='Download specific well number')
+    subparser_water = subparser.add_parser('connect')
+    subparser_water.add_argument('connect', metavar='PATH', help = 'Path to config file')
     return parser
 
 def cmd_line_parse(iargs=None):
@@ -76,7 +78,7 @@ def cmd_line_parse(iargs=None):
         sys.exit(0)
     return inps
 
-def step_ttem(config, inps):
+def step_ttem(config: dict, inps: dict) -> gpd.GeoDataFrame:
     print('Step1: Process ttem')
     if inps.get('layer_exclude'):
         config['layer_exclude'] = inps['layer_exclude']
@@ -115,7 +117,7 @@ def step_ttem(config, inps):
     return ttem.data
 
 
-def step_lithology(config, inps):
+def step_lithology(config: dict, inps: dict)-> gpd.GeoDataFrame:
     print('Step2: Process lithology')
     if inps.get('reproject'):
         config['lithology_reproject_crs'] = inps['reproject']
@@ -136,10 +138,11 @@ def step_lithology(config, inps):
     lithology.data.to_csv(config['well_temp'].joinpath(Path(config['well_path']).stem+ '.csv'), index=False)
     return lithology.data
 
+
 def step_gamma(config, inps):
     return
 
-def step_water(config, inps):
+def step_water(config : dict, inps: dict) -> tuple:
     print('Step4: Process water level data')
     if inps.get('well_no'):
         config['USGS_well_NO'] = inps['well_no']
@@ -159,6 +162,23 @@ def step_water(config, inps):
     print('Water level data saved in {}'.format(config['deliver'].joinpath('water_level.xlsx')))
     return water, meta
 
+
+def step_connect(config: dict, inps:dict, ttem: gpd.GeoDataFrame, lithology: gpd.GeoDataFrame):
+    if not ttem and lithology:
+        ttemlist = Path(config['ttem_temp']).glob('*.csv')
+        temp_ttem = pd.concat([pd.read_csv(file) for file in ttemlist])
+        ttem =  gpd.GeoDataFrame(temp_ttem, geometry=gpd.points_from_xy(temp_ttem['X'], temp_ttem['Y']), 
+                                crs=config['ttem_reproject_crs'])
+        lithologylist = Path(config['well_tem']).glob('*.csv')
+        temp_lithology = pd.concat([pd.read_csv(file) for file in lithologylist])
+        lithology = gpd.GeoDataFrame(temp_lithology, geometry=gpd.points_from_xy(temp_lithology['X'], temp_lithology['Y']), 
+                                crs=config['lithology_reproject_crs'])
+    matched_ttem, matched_lithology = lithology_connect.select_closest(ttem, lithology,
+                                                                       search_radius = config['search_radius'])
+    
+        
+    return
+    
 def main(iargs=None):
     inps = vars(cmd_line_parse(iargs)) # parse CLI input to dict
     #########run entire ttem rock physics tranform process
