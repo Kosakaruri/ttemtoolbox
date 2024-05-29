@@ -186,7 +186,8 @@ def step_connect(config: dict, inps:dict,
     matched_ttem, matched_lithology = lithology_connect.select_closest(ttem, lithology,
                                                                        search_radius = config['search_radius'])
     stitched = lithology_connect.ttem_well_connect(matched_ttem, matched_lithology)
-    stitched.to_csv(config['deliver'].joinpath('ttem_well_connect.csv'))
+    stitched.to_csv(Path(config['deliver']).joinpath('ttem_well_connect.csv'))
+    print('connected file saved to {}'.format(Path(config['deliver']).joinpath('ttem_well_connect.csv')))
     return stitched
     
 def main(iargs=None):
@@ -198,6 +199,9 @@ def main(iargs=None):
         tools.clean_output(Path(user_config['output']))
         config = tools.create_dir_structure(user_config)
         ttemdata = step_ttem(config, inps)
+        lithology = step_lithology(config, inps)
+        water, meta = step_water(config, inps)
+        stitched = step_connect(config,inps, ttemdata, lithology)
         
     if inps.get('force_clean'):
         print('All result will be purged')

@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>ttemtoolbox.core.process_gamma API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>ttemtoolbox.core.process_gamma</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python
+import sys
+import pandas as pd
+from pyproj import Transformer
+from . import process_well
+import numpy as np
+import re
+
+
+def load_gamma(fname, **kwargs):
+    #gamma_file_path = folder
+    #gamma_file = glob.glob(gamma_file_path + &#39;\*.csv&#39;)
+    #exclude_keyword = re.compile(r&#39;fluid&#39;)
+    #filt_gamma_file = list(filter(lambda x: not exclude_keyword.search(x), gamma_file))
+    if re.search(&#39;fluid&#39;, fname):
+        raise (&#39;{} does not contains gamma data&#39;.format(fname))
+    else:
+        df = pd.read_csv(fname, skiprows=[1])
+        df.columns = df.columns.str.strip()
+        df = df.replace(-999, np.nan)
+        filename = fname[fname.rfind(&#34;\\&#34;)+1:-4]
+        df[&#34;comment&#34;] = filename
+        df_hold = df[[&#34;Depth&#34;,&#34;comment&#34;]]
+        if np.isin(&#34;columns&#34;, list(kwargs.keys())):
+            tmp = df[kwargs[&#34;columns&#34;]]
+            df = pd.concat([tmp, df_hold],axis=1)
+        else:
+            raise (&#34;{} not the availiable option, availiable option contains &#39;columns&#39;&#34;.format(list(kwargs.keys())))
+    return df
+
+def georeference(df, geo):
+    output = df
+    location = pd.read_csv(geo)
+    location.loc[:, &#34;name&#34;] = location.loc[:, &#34;name&#34;].str.lower()
+    df_name = output.loc[:, &#34;comment&#34;][0].split()[0]
+    try:
+        match = location[location.loc[:, &#34;name&#34;].str.contains(df_name)]
+    except:
+        raise (&#34;{} does not found a match in location document&#34;.format(df_name))
+    x_ori = match.iloc[0][&#34;X&#34;]
+    y_ori = match.iloc[0][&#34;Y&#34;]
+    transformer = Transformer.from_crs(&#39;epsg:4326&#39;, &#39;epsg:32612&#39;)  # WGS84--&gt;UTM12N
+    x, y = transformer.transform(y_ori, x_ori)
+    output.loc[:, &#34;X&#34;] = x
+    output.loc[:, &#34;Y&#34;] = y
+    output.loc[:, &#34;Z&#34;] = match.loc[:, &#39;Z&#39;].values[0]
+    output.loc[:, &#34;Elevation&#34;] = output.loc[:, &#34;Z&#34;].sub(output.loc[:, &#34;Depth&#34;])
+
+    return output
+
+
+def rolling_average(df, window=5):
+    addon = [&#34;Depth&#34;, &#39;X&#39;, &#39;Y&#39;, &#34;Z&#34;]
+    roll_avg = df.rolling(
+        window=window,
+        axis=0).mean()
+    roll_avg = df.dropna().reset_index(drop=True)
+    roll_avg.loc[:, &#34;comment&#34;] = df.loc[0, &#34;comment&#34;]
+    roll_avg.loc[:, &#34;Elevation&#34;] = roll_avg.loc[:, &#34;Z&#34;].sub(roll_avg.loc[:, &#34;Depth&#34;])
+    return roll_avg
+
+
+def gamma_well_connect(gamma_df, welllog):
+    if isinstance(welllog, str):
+        ori_well = process_well.format_well(welllog, upscale=False)
+    elif isinstance(welllog, pd.DataFrame):
+        ori_well = welllog
+    else:
+        raise(&#34;welllog has to be either str or DataFrame not {}&#34;.format(type(welllog)))
+    gamma_place = list(gamma_df.groupby(&#34;comment&#34;).groups.keys())
+    utmx = gamma_df.loc[:, &#34;X&#34;].values[0]
+    utmy = gamma_df.loc[:, &#34;Y&#34;].values[0]
+    ori_well.loc[:,&#34;distance&#34;] = np.sqrt((ori_well.loc[:,&#34;UTMX&#34;]-utmx)**2+
+                                         (ori_well.loc[:,&#34;UTMY&#34;]-utmy)**2)
+    well_closest = ori_well[ori_well[&#34;distance&#34;] == ori_well.distance.min()].reset_index(drop=True)
+    ori_well_with_gamma = pd.DataFrame(columns=ori_well.columns)
+    ori_well_with_gamma[&#34;GR&#34;] = np.nan
+    for index, row in well_closest.iterrows():
+        if row[&#34;distance&#34;] &gt; 1000:
+            print(&#34;\n {} is too far away from welllog&#34;.format(gamma_df[&#34;comment&#34;][0]))
+            break
+        toplimit = row[&#34;Elevation1&#34;]
+        botlimit = row[&#34;Elevation2&#34;]
+        if botlimit &gt; gamma_df.loc[0, &#34;Elevation&#34;]:
+            continue
+        if toplimit &gt; gamma_df.loc[index, &#34;Elevation&#34;]:
+            toplimit = gamma_df.loc[index, &#34;Elevation&#34;]
+            row[&#34;Elevation1&#34;] = toplimit
+            row[&#34;Depth1&#34;] = toplimit
+
+        tmp_gamma_df = gamma_df[(gamma_df.loc[:,&#34;Elevation&#34;] &gt;= botlimit) &amp;
+                                (gamma_df.loc[:,&#34;Elevation&#34;] &lt; toplimit)]
+        gamma_total = tmp_gamma_df.loc[:,&#34;GR&#34;].sum()
+        gamma_total_series = pd.Series({&#34;GR&#34;: gamma_total})
+        row = row.append(gamma_total_series)
+        ori_well_with_gamma = ori_well_with_gamma.append(row, ignore_index=True)
+    ori_well_with_gamma[&#34;GRM&#34;] =ori_well_with_gamma[&#34;GR&#34;].div(ori_well_with_gamma[&#34;Elevation1&#34;].sub(ori_well_with_gamma[&#34;Elevation2&#34;]))
+    ori_well_with_gamma = ori_well_with_gamma.drop([&#34;Depth1&#34;,&#34;Depth2&#34;,&#34;Depth1_m&#34;,&#34;Depth2_m&#34;],axis=1)
+    ori_well_with_gamma[&#34;comment&#34;] = gamma_place[0]
+    return ori_well_with_gamma
+
+
+def gamma_ttem_connect(gamma_df, ttem):
+    gamma_place = list(gamma_df.groupby(&#34;comment&#34;).groups.keys())
+    utmx = gamma_df.loc[:, &#34;X&#34;].values[0]
+    utmy = gamma_df.loc[:, &#34;Y&#34;].values[0]
+    ttem.loc[:, &#34;gamma_distance&#34;] = np.sqrt((ttem.loc[:, &#34;UTMX&#34;] - utmx) ** 2 +
+                                          (ttem.loc[:, &#34;UTMY&#34;] - utmy) ** 2)
+    ttem_closest = ttem[ttem[&#34;gamma_distance&#34;] == ttem.gamma_distance.min()].reset_index(drop=True)
+    ttem_with_gamma = pd.DataFrame(columns=ttem.columns)
+    ttem_with_gamma[&#34;GR&#34;] = np.nan
+    for index, row in ttem_closest.iterrows():
+        ### small progress bar
+        print(&#39;\r&#39;, end=&#39;&#39;)
+        print(&#34;Progress {}/{}&#34;.format(index, ttem_closest.shape[0]), end=&#39;&#39;)
+        sys.stdout.flush()
+        ###
+        toplimit = row[&#34;Elevation_Cell&#34;]
+        botlimit = row[&#34;Elevation_End&#34;]
+        if row[&#34;gamma_distance&#34;] &gt; 1000:
+            print(&#34;\n {} is too far away from ttem lines&#34;.format(gamma_df[&#34;comment&#34;][0]))
+            break
+        if botlimit &gt; gamma_df.loc[0, &#34;Elevation&#34;]:
+            continue
+        if toplimit &gt; gamma_df.loc[0, &#34;Elevation&#34;]:
+            toplimit = gamma_df.loc[index, &#34;Elevation&#34;]
+            row[&#34;Elevation_Cell&#34;] = toplimit
+            row[&#34;Elevation_End&#34;] = row[&#34;Elevation_Cell&#34;] - row[&#34;Thickness&#34;]
+
+        tmp_gamma_df = gamma_df[(gamma_df.loc[:,&#34;Elevation&#34;] &gt;= botlimit) &amp;
+                                (gamma_df.loc[:,&#34;Elevation&#34;] &lt; toplimit)]
+        gamma_total = tmp_gamma_df.loc[:,&#34;GR&#34;].sum()
+        if gamma_total == 0:
+            break
+        gamma_total_series = pd.Series({&#34;GR&#34;: gamma_total})
+        row = row.append(gamma_total_series)
+        ttem_with_gamma = ttem_with_gamma.append(row, ignore_index=True)
+    ttem_with_gamma[&#34;GRM&#34;] =ttem_with_gamma[&#34;GR&#34;].div(ttem_with_gamma[&#34;Elevation_Cell&#34;].sub(ttem_with_gamma[&#34;Elevation_End&#34;]))
+    ttem_with_gamma[&#34;comment&#34;] = gamma_place[0]
+    return ttem_with_gamma</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="ttemtoolbox.core.process_gamma.gamma_ttem_connect"><code class="name flex">
+<span>def <span class="ident">gamma_ttem_connect</span></span>(<span>gamma_df, ttem)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def gamma_ttem_connect(gamma_df, ttem):
+    gamma_place = list(gamma_df.groupby(&#34;comment&#34;).groups.keys())
+    utmx = gamma_df.loc[:, &#34;X&#34;].values[0]
+    utmy = gamma_df.loc[:, &#34;Y&#34;].values[0]
+    ttem.loc[:, &#34;gamma_distance&#34;] = np.sqrt((ttem.loc[:, &#34;UTMX&#34;] - utmx) ** 2 +
+                                          (ttem.loc[:, &#34;UTMY&#34;] - utmy) ** 2)
+    ttem_closest = ttem[ttem[&#34;gamma_distance&#34;] == ttem.gamma_distance.min()].reset_index(drop=True)
+    ttem_with_gamma = pd.DataFrame(columns=ttem.columns)
+    ttem_with_gamma[&#34;GR&#34;] = np.nan
+    for index, row in ttem_closest.iterrows():
+        ### small progress bar
+        print(&#39;\r&#39;, end=&#39;&#39;)
+        print(&#34;Progress {}/{}&#34;.format(index, ttem_closest.shape[0]), end=&#39;&#39;)
+        sys.stdout.flush()
+        ###
+        toplimit = row[&#34;Elevation_Cell&#34;]
+        botlimit = row[&#34;Elevation_End&#34;]
+        if row[&#34;gamma_distance&#34;] &gt; 1000:
+            print(&#34;\n {} is too far away from ttem lines&#34;.format(gamma_df[&#34;comment&#34;][0]))
+            break
+        if botlimit &gt; gamma_df.loc[0, &#34;Elevation&#34;]:
+            continue
+        if toplimit &gt; gamma_df.loc[0, &#34;Elevation&#34;]:
+            toplimit = gamma_df.loc[index, &#34;Elevation&#34;]
+            row[&#34;Elevation_Cell&#34;] = toplimit
+            row[&#34;Elevation_End&#34;] = row[&#34;Elevation_Cell&#34;] - row[&#34;Thickness&#34;]
+
+        tmp_gamma_df = gamma_df[(gamma_df.loc[:,&#34;Elevation&#34;] &gt;= botlimit) &amp;
+                                (gamma_df.loc[:,&#34;Elevation&#34;] &lt; toplimit)]
+        gamma_total = tmp_gamma_df.loc[:,&#34;GR&#34;].sum()
+        if gamma_total == 0:
+            break
+        gamma_total_series = pd.Series({&#34;GR&#34;: gamma_total})
+        row = row.append(gamma_total_series)
+        ttem_with_gamma = ttem_with_gamma.append(row, ignore_index=True)
+    ttem_with_gamma[&#34;GRM&#34;] =ttem_with_gamma[&#34;GR&#34;].div(ttem_with_gamma[&#34;Elevation_Cell&#34;].sub(ttem_with_gamma[&#34;Elevation_End&#34;]))
+    ttem_with_gamma[&#34;comment&#34;] = gamma_place[0]
+    return ttem_with_gamma</code></pre>
+</details>
+</dd>
+<dt id="ttemtoolbox.core.process_gamma.gamma_well_connect"><code class="name flex">
+<span>def <span class="ident">gamma_well_connect</span></span>(<span>gamma_df, welllog)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def gamma_well_connect(gamma_df, welllog):
+    if isinstance(welllog, str):
+        ori_well = process_well.format_well(welllog, upscale=False)
+    elif isinstance(welllog, pd.DataFrame):
+        ori_well = welllog
+    else:
+        raise(&#34;welllog has to be either str or DataFrame not {}&#34;.format(type(welllog)))
+    gamma_place = list(gamma_df.groupby(&#34;comment&#34;).groups.keys())
+    utmx = gamma_df.loc[:, &#34;X&#34;].values[0]
+    utmy = gamma_df.loc[:, &#34;Y&#34;].values[0]
+    ori_well.loc[:,&#34;distance&#34;] = np.sqrt((ori_well.loc[:,&#34;UTMX&#34;]-utmx)**2+
+                                         (ori_well.loc[:,&#34;UTMY&#34;]-utmy)**2)
+    well_closest = ori_well[ori_well[&#34;distance&#34;] == ori_well.distance.min()].reset_index(drop=True)
+    ori_well_with_gamma = pd.DataFrame(columns=ori_well.columns)
+    ori_well_with_gamma[&#34;GR&#34;] = np.nan
+    for index, row in well_closest.iterrows():
+        if row[&#34;distance&#34;] &gt; 1000:
+            print(&#34;\n {} is too far away from welllog&#34;.format(gamma_df[&#34;comment&#34;][0]))
+            break
+        toplimit = row[&#34;Elevation1&#34;]
+        botlimit = row[&#34;Elevation2&#34;]
+        if botlimit &gt; gamma_df.loc[0, &#34;Elevation&#34;]:
+            continue
+        if toplimit &gt; gamma_df.loc[index, &#34;Elevation&#34;]:
+            toplimit = gamma_df.loc[index, &#34;Elevation&#34;]
+            row[&#34;Elevation1&#34;] = toplimit
+            row[&#34;Depth1&#34;] = toplimit
+
+        tmp_gamma_df = gamma_df[(gamma_df.loc[:,&#34;Elevation&#34;] &gt;= botlimit) &amp;
+                                (gamma_df.loc[:,&#34;Elevation&#34;] &lt; toplimit)]
+        gamma_total = tmp_gamma_df.loc[:,&#34;GR&#34;].sum()
+        gamma_total_series = pd.Series({&#34;GR&#34;: gamma_total})
+        row = row.append(gamma_total_series)
+        ori_well_with_gamma = ori_well_with_gamma.append(row, ignore_index=True)
+    ori_well_with_gamma[&#34;GRM&#34;] =ori_well_with_gamma[&#34;GR&#34;].div(ori_well_with_gamma[&#34;Elevation1&#34;].sub(ori_well_with_gamma[&#34;Elevation2&#34;]))
+    ori_well_with_gamma = ori_well_with_gamma.drop([&#34;Depth1&#34;,&#34;Depth2&#34;,&#34;Depth1_m&#34;,&#34;Depth2_m&#34;],axis=1)
+    ori_well_with_gamma[&#34;comment&#34;] = gamma_place[0]
+    return ori_well_with_gamma</code></pre>
+</details>
+</dd>
+<dt id="ttemtoolbox.core.process_gamma.georeference"><code class="name flex">
+<span>def <span class="ident">georeference</span></span>(<span>df, geo)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def georeference(df, geo):
+    output = df
+    location = pd.read_csv(geo)
+    location.loc[:, &#34;name&#34;] = location.loc[:, &#34;name&#34;].str.lower()
+    df_name = output.loc[:, &#34;comment&#34;][0].split()[0]
+    try:
+        match = location[location.loc[:, &#34;name&#34;].str.contains(df_name)]
+    except:
+        raise (&#34;{} does not found a match in location document&#34;.format(df_name))
+    x_ori = match.iloc[0][&#34;X&#34;]
+    y_ori = match.iloc[0][&#34;Y&#34;]
+    transformer = Transformer.from_crs(&#39;epsg:4326&#39;, &#39;epsg:32612&#39;)  # WGS84--&gt;UTM12N
+    x, y = transformer.transform(y_ori, x_ori)
+    output.loc[:, &#34;X&#34;] = x
+    output.loc[:, &#34;Y&#34;] = y
+    output.loc[:, &#34;Z&#34;] = match.loc[:, &#39;Z&#39;].values[0]
+    output.loc[:, &#34;Elevation&#34;] = output.loc[:, &#34;Z&#34;].sub(output.loc[:, &#34;Depth&#34;])
+
+    return output</code></pre>
+</details>
+</dd>
+<dt id="ttemtoolbox.core.process_gamma.load_gamma"><code class="name flex">
+<span>def <span class="ident">load_gamma</span></span>(<span>fname, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_gamma(fname, **kwargs):
+    #gamma_file_path = folder
+    #gamma_file = glob.glob(gamma_file_path + &#39;\*.csv&#39;)
+    #exclude_keyword = re.compile(r&#39;fluid&#39;)
+    #filt_gamma_file = list(filter(lambda x: not exclude_keyword.search(x), gamma_file))
+    if re.search(&#39;fluid&#39;, fname):
+        raise (&#39;{} does not contains gamma data&#39;.format(fname))
+    else:
+        df = pd.read_csv(fname, skiprows=[1])
+        df.columns = df.columns.str.strip()
+        df = df.replace(-999, np.nan)
+        filename = fname[fname.rfind(&#34;\\&#34;)+1:-4]
+        df[&#34;comment&#34;] = filename
+        df_hold = df[[&#34;Depth&#34;,&#34;comment&#34;]]
+        if np.isin(&#34;columns&#34;, list(kwargs.keys())):
+            tmp = df[kwargs[&#34;columns&#34;]]
+            df = pd.concat([tmp, df_hold],axis=1)
+        else:
+            raise (&#34;{} not the availiable option, availiable option contains &#39;columns&#39;&#34;.format(list(kwargs.keys())))
+    return df</code></pre>
+</details>
+</dd>
+<dt id="ttemtoolbox.core.process_gamma.rolling_average"><code class="name flex">
+<span>def <span class="ident">rolling_average</span></span>(<span>df, window=5)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rolling_average(df, window=5):
+    addon = [&#34;Depth&#34;, &#39;X&#39;, &#39;Y&#39;, &#34;Z&#34;]
+    roll_avg = df.rolling(
+        window=window,
+        axis=0).mean()
+    roll_avg = df.dropna().reset_index(drop=True)
+    roll_avg.loc[:, &#34;comment&#34;] = df.loc[0, &#34;comment&#34;]
+    roll_avg.loc[:, &#34;Elevation&#34;] = roll_avg.loc[:, &#34;Z&#34;].sub(roll_avg.loc[:, &#34;Depth&#34;])
+    return roll_avg</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="ttemtoolbox.core" href="index.html">ttemtoolbox.core</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="ttemtoolbox.core.process_gamma.gamma_ttem_connect" href="#ttemtoolbox.core.process_gamma.gamma_ttem_connect">gamma_ttem_connect</a></code></li>
+<li><code><a title="ttemtoolbox.core.process_gamma.gamma_well_connect" href="#ttemtoolbox.core.process_gamma.gamma_well_connect">gamma_well_connect</a></code></li>
+<li><code><a title="ttemtoolbox.core.process_gamma.georeference" href="#ttemtoolbox.core.process_gamma.georeference">georeference</a></code></li>
+<li><code><a title="ttemtoolbox.core.process_gamma.load_gamma" href="#ttemtoolbox.core.process_gamma.load_gamma">load_gamma</a></code></li>
+<li><code><a title="ttemtoolbox.core.process_gamma.rolling_average" href="#ttemtoolbox.core.process_gamma.rolling_average">rolling_average</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

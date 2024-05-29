@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>ttemtoolbox.core.gridsearch API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>ttemtoolbox.core.gridsearch</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import ttemtoolbox as tt
+
+def value_search(ttem_data_df, welllog, WIN, rho_fine=10, rho_coarse=25,step=1, loop_range=20,correct=False):
+    #progress = Bar(&#39;Processing&#39;, max=100)
+    import itertools
+    if isinstance(welllog,(str, pathlib.PurePath)):
+        welllog_df = tt.core.process_well.ProcessWell(welllog)
+        welllog_df = welllog_df.upscale(100)
+    elif isinstance(welllog, pd.DataFrame):
+        welllog_df = welllog
+    welllog_WIN = welllog_df[welllog_df[&#39;Bore&#39;]==str(WIN)]
+    try:
+        ttem_data = closest_rock(ttem_data_df, welllog_WIN)
+    except ttem_data.empty:
+         raise (&#39;No match Well log&#39;)
+    fine_range = np.arange(rho_fine, rho_fine + (step * loop_range), step)
+    coarse_range = np.arange(rho_coarse, rho_coarse + (step * loop_range), step)
+    resistivity_list = list(itertools.product(fine_range, coarse_range))
+    #Resi_conf_df = pd.DataFrame({&#39;Fine_conf&#39;: [0, fine_rho], &#39;Mix_conf&#39;: [fine_rho, coarse_rho], &#39;Coarse_conf&#39;: [coarse_rho, 300]})
+    welllog_WIN[&#39;Elevation_top&#39;] = welllog_WIN[&#39;Elevation_top&#39;].round(2)
+    if correct is True:
+        elevation_diff = welllog_WIN[&#39;Elevation_top&#39;].iloc[0] - ttem_data[&#39;Elevation_Cell&#39;].iloc[0]
+        welllog_WIN[&#39;Elevation_top&#39;] =welllog_WIN[&#39;Elevation_top&#39;].subtract(elevation_diff)
+        welllog_WIN[&#39;Elevation_bottom&#39;] = welllog_WIN[&#39;Elevation_bottom&#39;].subtract(elevation_diff)
+    reslist = [&#39;&#39;]*len(resistivity_list)
+    corrlist = [&#39;&#39;]*len(resistivity_list)
+    i = 0
+    for rho_fine, rho_coarse in resistivity_list:
+        Resi_conf_df = pd.DataFrame(
+            {&#39;Fine_conf&#39;: [0, rho_fine],
+             &#39;Mix_conf&#39;: [rho_fine, rho_coarse],
+             &#39;Coarse_conf&#39;: [rho_coarse, 300]})
+        reslist[i] = [rho_fine, rho_coarse]
+        rk_trans = tt.core.Rock_trans.rock_transform(ttem_data, Resi_conf_df)
+        merge = pd.merge(welllog_WIN, rk_trans, left_on=[&#39;Elevation_top&#39;], right_on=[&#39;Elevation_Cell&#39;])
+        #corr = merge[&#39;Keyword_n&#39;].corr(merge[&#39;Identity_n&#39;])
+        corr2 = (merge[&#39;Keyword_n&#39;] == merge[&#39;Identity_n&#39;]).sum()/len(merge[&#39;Keyword_n&#39;])
+        #corrlist.append(corr)
+        corrlist[i]=corr2
+        i += 1
+    def fine_best_corr(reslist, corrlist):
+        corrlist = [np.nan_to_num(x) for x in corrlist]
+        best_corr = max(corrlist)
+        match_list = [i for i, x in enumerate(corrlist) if x == best_corr]
+        resistivity_list = [reslist[i] for i in match_list]
+        resistivity_coarse_gt_fine = [i for i in resistivity_list if i[1]&gt;i[0]]
+        res_bkup_incase_empty = np.array(resistivity_list)
+        resistivity_array = np.array(resistivity_coarse_gt_fine)
+        if resistivity_array.size &gt; 0:
+            fine_grained_rho_mean = resistivity_array[:,0].mean()
+            coarse_grained_rho_mean = resistivity_array[:,1].mean()
+            export_result = {&#39;similiarity&#39;:best_corr,&#39;Fine_conf&#39;:fine_grained_rho_mean,&#39;Coarse_conf&#39;:coarse_grained_rho_mean}
+            return export_result
+        else:
+            coarse_grained_rho_mean = res_bkup_incase_empty[:, 1].mean()
+            fine_grained_rho_mean = coarse_grained_rho_mean
+
+            export_result = {&#39;similiarity&#39;: best_corr, &#39;Fine_conf&#39;: fine_grained_rho_mean,
+                             &#39;Coarse_conf&#39;: coarse_grained_rho_mean}
+            return export_result
+    #resi_conf_df1, best1 = fine_best_corr(reslist, corrlist)
+    best= fine_best_corr(reslist, corrlist)
+
+    #progress.finish()
+    return best
+def value_search_res(ttem_data_df, welllog, WIN,
+                     rho_fine:float=10,
+                     rho_mix:float=15,
+                     rho_coarse:float=25,
+                     step:int=1,
+                     loop_range:int=20,correct=False):
+    &#34;&#34;&#34;
+    Assign each lithology type as corresponsing resistivity and run pearson correlation to fine the best resistiviry overall
+    :param ttem_data_df: tTEM resistivity profile
+    :param welllog: well log data
+    :param WIN: The WIN number of the well log
+    :param rho_fine: resistivity of fine-grained material
+    :param rho_mix: resistivity of mix-grained material
+    :param rho_coarse: resistivity of coarse-grained material
+    :param step: loop of each step
+    :param loop_range: the total range of the loop
+    :return:
+    &#34;&#34;&#34;
+    import itertools
+    pd.options.mode.chained_assignment = None
+    if isinstance(welllog,(str, pathlib.PurePath)):
+        welllog_df = tt.core.process_well.ProcessWell(welllog)
+        welllog_df = welllog_df.upscale(100)
+    elif isinstance(welllog, pd.DataFrame):
+        welllog_df = welllog
+    welllog_WIN = welllog_df[welllog_df[&#39;Bore&#39;]==str(WIN)]
+    welllog_WIN.fillna(&#39;&#39;,inplace=True)
+    try:
+        ttem_data = closest_rock(ttem_data_df, welllog_WIN)
+    except ttem_data.empty:
+         raise (&#39;well log expty&#39;)
+    welllog_WIN[&#39;Elevation_top&#39;] = welllog_WIN[&#39;Elevation_top&#39;].round(2)
+    if correct is True:
+        elevation_diff = welllog_WIN[&#39;Elevation_top&#39;].iloc[0] - ttem_data[&#39;Elevation_Cell&#39;].iloc[0]
+        welllog_WIN[&#39;Elevation_top&#39;] =welllog_WIN[&#39;Elevation_top&#39;].subtract(elevation_diff)
+        welllog_WIN[&#39;Elevation_bottom&#39;] = welllog_WIN[&#39;Elevation_bottom&#39;].subtract(elevation_diff)
+
+    fine_range = np.arange(rho_fine, rho_fine+(step*loop_range), step)
+    mix_range = np.arange(rho_mix, rho_mix+(step*loop_range), step)
+    coarse_range = np.arange(rho_coarse, rho_coarse+(step*loop_range), step)
+    resistivity_list = list(itertools.product(fine_range, mix_range, coarse_range))
+    corr_list = [&#39;&#39;]*len(resistivity_list)
+    i=0
+    #total = len(resistivity_list)
+    #count = 0
+
+    merge = pd.merge(welllog_WIN, ttem_data, left_on=[&#39;Elevation_top&#39;], right_on=[&#39;Elevation_Cell&#39;])
+    choicelist = [merge[&#39;Keyword_n&#39;] == 1, merge[&#39;Keyword_n&#39;] == 2, merge[&#39;Keyword_n&#39;] == 3]
+    for rho_fine, rho_mix, rho_coarse in resistivity_list:
+
+        choicelist2 = [rho_fine, rho_mix, rho_coarse]
+        welllog_resistivity = np.select(choicelist, choicelist2)
+        corr = np.corrcoef(welllog_resistivity, merge[&#39;Resistivity&#39;])[0,1]
+        corr_list[i]=corr
+        i+=1
+        #count = count + 1
+        #print(&#39;{}/{}&#39;.format(count, total))
+    def best_corr(reslist, corrlist):
+        corrlist = [np.nan_to_num(x) for x in corrlist]
+        best = max(corrlist)
+        match_list = [i for i, x in enumerate(corrlist) if x == best]
+        resistivity_list = [reslist[i] for i in match_list]
+        resistivity_coarse_gt_fine = [i for i in resistivity_list if i[2] &gt; i[0]]
+        res_bkup_incase_empty = np.array(resistivity_list)
+        resistivity_array = np.array(resistivity_coarse_gt_fine)
+        if resistivity_array.size &gt; 0:
+            fine_rho_avg = resistivity_array[:,0].mean()
+            mix_rho_avg = resistivity_array[:,1].mean()
+            coarse_rho_avg = resistivity_array[:,2].mean()
+            export_result = {&#39;pearson&#39;:best,&#39;Fine_average&#39;:fine_rho_avg,&#39;Mix_average&#39;:mix_rho_avg,&#39;Coarse_average&#39;:coarse_rho_avg,}
+            return export_result
+        else:
+
+            mix_rho_avg = res_bkup_incase_empty[:, 1].mean()
+            coarse_rho_avg = res_bkup_incase_empty[:, 2].mean()
+            fine_rho_avg = coarse_rho_avg
+            export_result = {&#39;pearson&#39;:best,&#39;Fine_average&#39;:fine_rho_avg,&#39;Mix_average&#39;:mix_rho_avg,&#39;Coarse_average&#39;:coarse_rho_avg,}
+            return export_result
+    resi_conf_df = best_corr(resistivity_list, corr_list)
+    return resi_conf_df</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="ttemtoolbox.core.gridsearch.value_search"><code class="name flex">
+<span>def <span class="ident">value_search</span></span>(<span>ttem_data_df, welllog, WIN, rho_fine=10, rho_coarse=25, step=1, loop_range=20, correct=False)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def value_search(ttem_data_df, welllog, WIN, rho_fine=10, rho_coarse=25,step=1, loop_range=20,correct=False):
+    #progress = Bar(&#39;Processing&#39;, max=100)
+    import itertools
+    if isinstance(welllog,(str, pathlib.PurePath)):
+        welllog_df = tt.core.process_well.ProcessWell(welllog)
+        welllog_df = welllog_df.upscale(100)
+    elif isinstance(welllog, pd.DataFrame):
+        welllog_df = welllog
+    welllog_WIN = welllog_df[welllog_df[&#39;Bore&#39;]==str(WIN)]
+    try:
+        ttem_data = closest_rock(ttem_data_df, welllog_WIN)
+    except ttem_data.empty:
+         raise (&#39;No match Well log&#39;)
+    fine_range = np.arange(rho_fine, rho_fine + (step * loop_range), step)
+    coarse_range = np.arange(rho_coarse, rho_coarse + (step * loop_range), step)
+    resistivity_list = list(itertools.product(fine_range, coarse_range))
+    #Resi_conf_df = pd.DataFrame({&#39;Fine_conf&#39;: [0, fine_rho], &#39;Mix_conf&#39;: [fine_rho, coarse_rho], &#39;Coarse_conf&#39;: [coarse_rho, 300]})
+    welllog_WIN[&#39;Elevation_top&#39;] = welllog_WIN[&#39;Elevation_top&#39;].round(2)
+    if correct is True:
+        elevation_diff = welllog_WIN[&#39;Elevation_top&#39;].iloc[0] - ttem_data[&#39;Elevation_Cell&#39;].iloc[0]
+        welllog_WIN[&#39;Elevation_top&#39;] =welllog_WIN[&#39;Elevation_top&#39;].subtract(elevation_diff)
+        welllog_WIN[&#39;Elevation_bottom&#39;] = welllog_WIN[&#39;Elevation_bottom&#39;].subtract(elevation_diff)
+    reslist = [&#39;&#39;]*len(resistivity_list)
+    corrlist = [&#39;&#39;]*len(resistivity_list)
+    i = 0
+    for rho_fine, rho_coarse in resistivity_list:
+        Resi_conf_df = pd.DataFrame(
+            {&#39;Fine_conf&#39;: [0, rho_fine],
+             &#39;Mix_conf&#39;: [rho_fine, rho_coarse],
+             &#39;Coarse_conf&#39;: [rho_coarse, 300]})
+        reslist[i] = [rho_fine, rho_coarse]
+        rk_trans = tt.core.Rock_trans.rock_transform(ttem_data, Resi_conf_df)
+        merge = pd.merge(welllog_WIN, rk_trans, left_on=[&#39;Elevation_top&#39;], right_on=[&#39;Elevation_Cell&#39;])
+        #corr = merge[&#39;Keyword_n&#39;].corr(merge[&#39;Identity_n&#39;])
+        corr2 = (merge[&#39;Keyword_n&#39;] == merge[&#39;Identity_n&#39;]).sum()/len(merge[&#39;Keyword_n&#39;])
+        #corrlist.append(corr)
+        corrlist[i]=corr2
+        i += 1
+    def fine_best_corr(reslist, corrlist):
+        corrlist = [np.nan_to_num(x) for x in corrlist]
+        best_corr = max(corrlist)
+        match_list = [i for i, x in enumerate(corrlist) if x == best_corr]
+        resistivity_list = [reslist[i] for i in match_list]
+        resistivity_coarse_gt_fine = [i for i in resistivity_list if i[1]&gt;i[0]]
+        res_bkup_incase_empty = np.array(resistivity_list)
+        resistivity_array = np.array(resistivity_coarse_gt_fine)
+        if resistivity_array.size &gt; 0:
+            fine_grained_rho_mean = resistivity_array[:,0].mean()
+            coarse_grained_rho_mean = resistivity_array[:,1].mean()
+            export_result = {&#39;similiarity&#39;:best_corr,&#39;Fine_conf&#39;:fine_grained_rho_mean,&#39;Coarse_conf&#39;:coarse_grained_rho_mean}
+            return export_result
+        else:
+            coarse_grained_rho_mean = res_bkup_incase_empty[:, 1].mean()
+            fine_grained_rho_mean = coarse_grained_rho_mean
+
+            export_result = {&#39;similiarity&#39;: best_corr, &#39;Fine_conf&#39;: fine_grained_rho_mean,
+                             &#39;Coarse_conf&#39;: coarse_grained_rho_mean}
+            return export_result
+    #resi_conf_df1, best1 = fine_best_corr(reslist, corrlist)
+    best= fine_best_corr(reslist, corrlist)
+
+    #progress.finish()
+    return best</code></pre>
+</details>
+</dd>
+<dt id="ttemtoolbox.core.gridsearch.value_search_res"><code class="name flex">
+<span>def <span class="ident">value_search_res</span></span>(<span>ttem_data_df, welllog, WIN, rho_fine: float = 10, rho_mix: float = 15, rho_coarse: float = 25, step: int = 1, loop_range: int = 20, correct=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Assign each lithology type as corresponsing resistivity and run pearson correlation to fine the best resistiviry overall
+:param ttem_data_df: tTEM resistivity profile
+:param welllog: well log data
+:param WIN: The WIN number of the well log
+:param rho_fine: resistivity of fine-grained material
+:param rho_mix: resistivity of mix-grained material
+:param rho_coarse: resistivity of coarse-grained material
+:param step: loop of each step
+:param loop_range: the total range of the loop
+:return:</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def value_search_res(ttem_data_df, welllog, WIN,
+                     rho_fine:float=10,
+                     rho_mix:float=15,
+                     rho_coarse:float=25,
+                     step:int=1,
+                     loop_range:int=20,correct=False):
+    &#34;&#34;&#34;
+    Assign each lithology type as corresponsing resistivity and run pearson correlation to fine the best resistiviry overall
+    :param ttem_data_df: tTEM resistivity profile
+    :param welllog: well log data
+    :param WIN: The WIN number of the well log
+    :param rho_fine: resistivity of fine-grained material
+    :param rho_mix: resistivity of mix-grained material
+    :param rho_coarse: resistivity of coarse-grained material
+    :param step: loop of each step
+    :param loop_range: the total range of the loop
+    :return:
+    &#34;&#34;&#34;
+    import itertools
+    pd.options.mode.chained_assignment = None
+    if isinstance(welllog,(str, pathlib.PurePath)):
+        welllog_df = tt.core.process_well.ProcessWell(welllog)
+        welllog_df = welllog_df.upscale(100)
+    elif isinstance(welllog, pd.DataFrame):
+        welllog_df = welllog
+    welllog_WIN = welllog_df[welllog_df[&#39;Bore&#39;]==str(WIN)]
+    welllog_WIN.fillna(&#39;&#39;,inplace=True)
+    try:
+        ttem_data = closest_rock(ttem_data_df, welllog_WIN)
+    except ttem_data.empty:
+         raise (&#39;well log expty&#39;)
+    welllog_WIN[&#39;Elevation_top&#39;] = welllog_WIN[&#39;Elevation_top&#39;].round(2)
+    if correct is True:
+        elevation_diff = welllog_WIN[&#39;Elevation_top&#39;].iloc[0] - ttem_data[&#39;Elevation_Cell&#39;].iloc[0]
+        welllog_WIN[&#39;Elevation_top&#39;] =welllog_WIN[&#39;Elevation_top&#39;].subtract(elevation_diff)
+        welllog_WIN[&#39;Elevation_bottom&#39;] = welllog_WIN[&#39;Elevation_bottom&#39;].subtract(elevation_diff)
+
+    fine_range = np.arange(rho_fine, rho_fine+(step*loop_range), step)
+    mix_range = np.arange(rho_mix, rho_mix+(step*loop_range), step)
+    coarse_range = np.arange(rho_coarse, rho_coarse+(step*loop_range), step)
+    resistivity_list = list(itertools.product(fine_range, mix_range, coarse_range))
+    corr_list = [&#39;&#39;]*len(resistivity_list)
+    i=0
+    #total = len(resistivity_list)
+    #count = 0
+
+    merge = pd.merge(welllog_WIN, ttem_data, left_on=[&#39;Elevation_top&#39;], right_on=[&#39;Elevation_Cell&#39;])
+    choicelist = [merge[&#39;Keyword_n&#39;] == 1, merge[&#39;Keyword_n&#39;] == 2, merge[&#39;Keyword_n&#39;] == 3]
+    for rho_fine, rho_mix, rho_coarse in resistivity_list:
+
+        choicelist2 = [rho_fine, rho_mix, rho_coarse]
+        welllog_resistivity = np.select(choicelist, choicelist2)
+        corr = np.corrcoef(welllog_resistivity, merge[&#39;Resistivity&#39;])[0,1]
+        corr_list[i]=corr
+        i+=1
+        #count = count + 1
+        #print(&#39;{}/{}&#39;.format(count, total))
+    def best_corr(reslist, corrlist):
+        corrlist = [np.nan_to_num(x) for x in corrlist]
+        best = max(corrlist)
+        match_list = [i for i, x in enumerate(corrlist) if x == best]
+        resistivity_list = [reslist[i] for i in match_list]
+        resistivity_coarse_gt_fine = [i for i in resistivity_list if i[2] &gt; i[0]]
+        res_bkup_incase_empty = np.array(resistivity_list)
+        resistivity_array = np.array(resistivity_coarse_gt_fine)
+        if resistivity_array.size &gt; 0:
+            fine_rho_avg = resistivity_array[:,0].mean()
+            mix_rho_avg = resistivity_array[:,1].mean()
+            coarse_rho_avg = resistivity_array[:,2].mean()
+            export_result = {&#39;pearson&#39;:best,&#39;Fine_average&#39;:fine_rho_avg,&#39;Mix_average&#39;:mix_rho_avg,&#39;Coarse_average&#39;:coarse_rho_avg,}
+            return export_result
+        else:
+
+            mix_rho_avg = res_bkup_incase_empty[:, 1].mean()
+            coarse_rho_avg = res_bkup_incase_empty[:, 2].mean()
+            fine_rho_avg = coarse_rho_avg
+            export_result = {&#39;pearson&#39;:best,&#39;Fine_average&#39;:fine_rho_avg,&#39;Mix_average&#39;:mix_rho_avg,&#39;Coarse_average&#39;:coarse_rho_avg,}
+            return export_result
+    resi_conf_df = best_corr(resistivity_list, corr_list)
+    return resi_conf_df</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="ttemtoolbox.core" href="index.html">ttemtoolbox.core</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="ttemtoolbox.core.gridsearch.value_search" href="#ttemtoolbox.core.gridsearch.value_search">value_search</a></code></li>
+<li><code><a title="ttemtoolbox.core.gridsearch.value_search_res" href="#ttemtoolbox.core.gridsearch.value_search_res">value_search_res</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

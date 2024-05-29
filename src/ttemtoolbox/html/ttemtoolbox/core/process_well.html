@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>ttemtoolbox.core.process_well API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>ttemtoolbox.core.process_well</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">#!/usr/bin/env python
+# process_well.py
+# Created: 2023-11-18
+# Version 11.18.2023
+# Author: Jiawei Li
+import os
+import pathlib
+import re
+import requests
+import numpy as np
+import pandas as pd
+import geopandas as gpd
+from pyproj import Transformer
+from itertools import compress
+from pathlib import Path
+from ttemtoolbox.defaults import constants
+from ttemtoolbox import utils
+from ttemtoolbox.utils import tools
+from collections import namedtuple
+class ProcessWell:
+    &#34;&#34;&#34;
+    This class is use to process and format lithology well logs (from excel or csv) and water level data (from USGS).\
+    All data were assume under metric unit (m). \n
+    :param lithologyfname: one or a list of string, pathlib.PurePath object, pandas dataframe. The input files(s) \
+            shall be either csv or excel file(s) that contains lithology and location data. sheet name and column name \
+            needs to be clearly marked as Lithology, Location, Latitude, Longitude, Depth_top, Depth_bottom or anything\
+            similiar, keyword(s) can be modified under tTEM_toolbox/defaults/constants.py.\
+    &#34;&#34;&#34;
+    def __init__(self,
+                 fname: str| pathlib.PurePath | list,
+                 crs: str = &#39;epsg:4326&#39;,
+                 unit: str = &#39;feet&#39;):
+        if isinstance(fname, str | pathlib.PurePath):
+            self.fname = [fname]
+            print(&#39;reading lithology from {}&#39;.format(Path(fname).name))
+        elif isinstance(fname, list):
+            if len(fname) == 0:
+                raise ValueError(&#39;Input file path is empty&#39;)
+            else:
+                self.fname = fname
+                print(&#39;reading lithology from {}&#39;.format([Path(f).name for f in fname]))
+        if unit == &#39;feet&#39;: 
+            self.unit = &#39;feet&#39;
+            self.unitconvert = 3.28084
+        elif unit == &#39;meter&#39;:
+            self.unit = &#39;meter&#39;
+            self.unitconvert = 1
+        self._crs = crs
+        self.data = self._format_well()
+        self.crs = self.data.crs
+        
+
+
+    @staticmethod
+    def _find_all_readable(path:pathlib.PurePath)-&gt;list:
+        &#34;&#34;&#34;
+        This will receive a single path-like input and try to filter all readable file paths for well logs uses.
+        :param path: path-like pathlib.PurePath object or string
+        :return: list of pathlib.PurePath objects
+        &#34;&#34;&#34;
+        readable_ext = constants.CSV_EXTENSION + constants.EXCEL_EXTENSION
+        if not isinstance(path, (str, pathlib.PurePath)):
+            raise TypeError(&#39;Input path must be a string or pathlib.PurePath object&#39;)
+
+        if Path(path).is_dir():
+            file_list = [f for f in Path(path).iterdir() if f.suffix in readable_ext]
+            if len(file_list) == 0:
+                raise ValueError(&#39;No {} file found in {}&#39;.format(readable_ext, path))
+            return file_list
+        elif Path(path).is_file():
+            if Path(path).suffix in readable_ext:
+                file_list = [path]
+            else:
+                raise ValueError(&#39;Input file does not have extension of {}&#39;.format(readable_ext))
+            return file_list
+
+    @staticmethod
+    def _format_input(fname:str| pathlib.PurePath| list| pd.DataFrame) -&gt; list:
+        &#34;&#34;&#34;
+        This will format input file path(s) to a list of pandas dataframe (read from csv) and/or dict that includes all sheets in the excel\
+         file, each sheet were pandas dataframe. If input is a pandas dataframe, it will return the input dataframe in a list.
+        :param fname: one or a list of string, pathlib.PurePath object, pandas dataframe
+        :return: a list of pandas dataframe and/or dict
+        &#34;&#34;&#34;
+        if isinstance(fname, (str, pathlib.PurePath)):
+            fname = [fname]
+        elif isinstance(fname, list):
+            pass
+        else:
+            raise TypeError(&#39;Input must be one or a list of string, pathlib.PurePath objects&#39;)
+        export_list = []
+        for path in fname:
+            file_list = ProcessWell._find_all_readable(path)
+            excels = [file for file in file_list if Path(file).suffix in constants.EXCEL_EXTENSION]
+            csvs = [file for file in file_list if Path(file).suffix in constants.CSV_EXTENSION]
+            read_excels = [pd.read_excel(file, sheet_name=None) for file in excels]
+            read_csvs = [pd.read_csv(file) for file in csvs]
+            combined = read_excels + read_csvs
+            export_list.append(combined)
+        result = [item for sublist in export_list for item in sublist]
+        return result
+    @staticmethod
+    def _read_lithology(fname: str| pathlib.PurePath |list| pd.DataFrame, mtoft=1) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;
+        Try to read lithology sheet from Excel file with tab name similar to &#39;Lithology&#39;, or csv file contains lithology data.
+        :param fname: one or a list of string, pathlib.PurePath object, pandas dataframe
+        :return:
+        &#34;&#34;&#34;
+        result = ProcessWell._format_input(fname)
+        lithology_list = []
+        for single_file in result:
+            if isinstance(single_file, dict):  # which means it is an Excel file
+                match_sheet_name = tools.keyword_search(single_file, constants.LITHOLOGY_SHEET_NAMES)
+                if len(match_sheet_name) == 0:
+                    continue
+                lithology_sheet = single_file[match_sheet_name[0]]
+                lithology_list.append(lithology_sheet)
+            if isinstance(single_file, pd.DataFrame):  # which means it is a csv file
+                match_column_lithology = tools.keyword_search(single_file, constants.LITHOLOGY_COLUMN_NAMES_KEYWORD)
+                if match_column_lithology &gt; 0:
+                    lithology_sheet = single_file
+                    lithology_list.append(lithology_sheet)
+        concat_list = []
+        for sheet in lithology_list:
+            match_column_lithology = tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_KEYWORD)
+            match_column_bore = tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_BORE)
+            match_column_depth_top = tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_DEPTH_TOP)
+            match_column_depth_bottom = tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_DEPTH_BOTTOM)
+
+            lithology = pd.DataFrame(sheet[match_column_lithology[0]])
+            lithology.columns = [&#39;Keyword&#39;]
+            lithology[&#39;Bore&#39;] = sheet[match_column_bore[0]]
+            lithology[&#39;Depth_top&#39;] = sheet[match_column_depth_top[0]]/mtoft
+            lithology[&#39;Depth_top&#39;]= lithology[&#39;Depth_top&#39;].round(2)
+            lithology[&#39;Depth_bottom&#39;] = sheet[match_column_depth_bottom[0]]/mtoft
+            lithology[&#39;Depth_bottom&#39;] = lithology[&#39;Depth_bottom&#39;].round(2)
+            lithology[&#39;Thickness&#39;] = lithology[&#39;Depth_bottom&#39;].subtract(lithology[&#39;Depth_top&#39;])
+
+            concat_list.append(lithology)
+        result = pd.concat(concat_list)
+        result = result[[&#39;Bore&#39;, &#39;Depth_top&#39;, &#39;Depth_bottom&#39;, &#39;Thickness&#39;, &#39;Keyword&#39;]]
+        return result
+
+    @staticmethod
+    def _read_spatial(fname: str| pathlib.PurePath, mtoft=1) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;
+        Similiar to _read_lithology, but read location sheet from Excel file with tab name similar to &#39;Location&#39;, \
+        or csv file contains location data.
+        :param fname: fname: one or a list of string, pathlib.PurePath object, pandas dataframe
+        :return:
+        &#34;&#34;&#34;
+        result = ProcessWell._format_input(fname)
+        location_list = []
+        for single_file in result:
+            if isinstance(single_file, dict):
+                match_sheet_name = utils.tools.keyword_search(single_file, constants.LOCATION_SHEET_NAMES)
+                if len(match_sheet_name) == 0:
+                    continue
+                location_sheet = single_file[match_sheet_name[0]]
+                location_list.append(location_sheet)
+            if isinstance(single_file, pd.DataFrame):
+                match_column_location = utils.tools.keyword_search(single_file, constants.LOCATION_COLUMN_NAMES_LON)
+                if match_column_location &gt; 0:
+                    location_sheet = single_file
+                    location_list.append(location_sheet)
+        concat_list = []
+        for sheet in location_list:
+            match_column_lat = utils.tools.keyword_search(sheet, constants.LOCATION_COLUMN_NAMES_LAT)
+            match_column_lon = utils.tools.keyword_search(sheet, constants.LOCATION_COLUMN_NAMES_LON)
+            match_column_elevation = utils.tools.keyword_search(sheet, constants.LOCATION_COLUMN_NAMES_ELEVATION)
+            location = pd.DataFrame(sheet[match_column_lat[0]])
+            location.columns = [&#39;Latitude&#39;]
+            location[&#39;Longitude&#39;] = sheet[match_column_lon[0]]
+            location[&#39;Bore&#39;] = sheet[&#39;Bore&#39;]
+            location[&#39;Elevation&#39;] = sheet[match_column_elevation[0]]/mtoft
+            location[&#39;Elevation&#39;] = location[&#39;Elevation&#39;].round(2)
+            concat_list.append(location)
+        result = pd.concat(concat_list)
+        return result
+
+
+    @staticmethod
+    def _fill(group, factor=100) -&gt; pd.DataFrame:
+        newgroup = group.loc[group.index.repeat(group.Thickness * factor)]
+        mul_per_gr = newgroup.groupby(&#39;Elevation_top&#39;).cumcount()
+        newgroup[&#39;Elevation_top&#39;] = newgroup[&#39;Elevation_top&#39;].subtract(mul_per_gr * 1 / factor)
+        newgroup[&#39;Depth_top&#39;] = newgroup[&#39;Depth_top&#39;].add(mul_per_gr * 1 / factor)
+        newgroup[&#39;Depth_bottom&#39;] = newgroup[&#39;Depth_top&#39;].add(1 / factor)
+        newgroup[&#39;Elevation_bottom&#39;] = newgroup[&#39;Elevation_top&#39;].subtract(1 / factor)
+        newgroup[&#39;Thickness&#39;] = 1 / factor
+        return newgroup
+
+    @staticmethod
+    def _lithology_location_connect(lithology: pd.DataFrame,
+                                   location: pd.DataFrame) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;
+        Connect lithology and location data by Borehole ID
+        :param lithology: lithology dataframe
+        :param location: location dataframe
+        :return: combined dataframe
+        &#34;&#34;&#34;
+        lithology_group = lithology.groupby(&#39;Bore&#39;)
+        concatlist = []
+        for name, group in lithology_group:
+            group_location = location[location[&#39;Bore&#39;] == name]
+            if group_location.empty:
+                continue
+            group[&#39;Y&#39;] = group_location[&#39;Latitude&#39;].iloc[0]
+            group[&#39;X&#39;] = group_location[&#39;Longitude&#39;].iloc[0]
+            group[&#39;Z&#39;] = group_location[&#39;Elevation&#39;].iloc[0]
+            group[&#39;Elevation_top&#39;] = group[&#39;Z&#39;].subtract(group[&#39;Depth_top&#39;])
+            group[&#39;Elevation_bottom&#39;] = group[&#39;Z&#39;].subtract(group[&#39;Depth_bottom&#39;])
+            concatlist.append(group)
+        result = pd.concat(concatlist)
+        return result
+
+
+    @staticmethod
+    def _assign_keyword_as_value(welllog_df) -&gt; pd.DataFrame:
+        conditionlist = [
+            (welllog_df[&#34;Keyword&#34;] == &#34;fine grain&#34;),
+            (welllog_df[&#34;Keyword&#34;] == &#34;mix grain&#34;),
+            (welllog_df[&#34;Keyword&#34;] == &#34;coarse grain&#34;)
+        ]
+        choicelist = [1, 2, 3]
+        welllog_df[&#34;Keyword_n&#34;] = np.select(conditionlist, choicelist)
+        return welllog_df
+
+
+    def _format_well(self) -&gt; gpd.GeoDataFrame:
+        lithology = self._read_lithology(self.fname, self.unitconvert)
+        location = self._read_spatial(self.fname, self.unitconvert)
+        self.data = self._lithology_location_connect(lithology, location)
+        self.data = ProcessWell._assign_keyword_as_value(self.data)
+        self.data.reset_index(drop=True, inplace=True)
+        gdf = gpd.GeoDataFrame(self.data, geometry=gpd.points_from_xy(self.data[&#39;X&#39;], self.data[&#39;Y&#39;]), 
+                               crs=self._crs)
+        self.data = gdf
+        return self.data
+
+    def reproject(self, crs: str) -&gt; gpd.GeoDataFrame:
+        &#34;&#34;&#34;
+        Reproject the data to a given coordinate system.
+
+        Parameters:
+        - crs (str): The coordinate system to reproject the data to.
+
+        Returns:
+        - geopandas.GeoDataFrame: The reprojected data.
+        &#34;&#34;&#34;
+        self.data = self.data.to_crs(crs)
+        self._crs = crs
+        self.data[&#39;X&#39;] = self.data.geometry.x
+        self.data[&#39;Y&#39;] = self.data.geometry.y
+        return self.data
+    
+    
+    def resample(self, scale: int) -&gt; gpd.GeoDataFrame:
+        &#34;&#34;&#34;
+        Upscales the data by a given scale factor.
+
+        Parameters:
+        - scale (int): The scale factor to upscale the data by.
+
+        Returns:
+        - geopandas.GeoDataFrame: The upscaled data.
+        &#34;&#34;&#34;
+        group = self.data.groupby(&#39;Bore&#39;)
+        self.data = group.apply(lambda x:ProcessWell._fill(x, scale))
+        self.data.reset_index(drop=True, inplace=True)
+        print(&#39;resampling lithology to {} &#39;.format(1/scale))
+        return self.data
+    
+    def summary(self):
+        groups = self.data.groupby(&#39;Bore&#39;)
+        concat_list = []
+        for bore, group in groups: 
+            total_thickness = group[&#39;Thickness&#39;].sum()
+            keywordgroup = group.groupby(&#39;Keyword&#39;)
+            keyword_summary = keywordgroup.agg({
+                &#39;Thickness&#39;: &#39;sum&#39;,
+                &#39;X&#39;: &#39;first&#39;,
+                &#39;Y&#39;: &#39;first&#39;,
+                &#39;Z&#39;: &#39;first&#39;
+            })
+            keyword_summary[keyword_summary.index.name] = keyword_summary.index.values
+            keyword_summary[&#39;ratio&#39;] = keyword_summary[&#39;Thickness&#39;] / total_thickness
+            keyword_summary.reset_index(drop=True, inplace=True)
+            keyword_summary[&#39;bore&#39;] = bore
+            keyword_summary[&#39;unit&#39;] = &#39;meter&#39;
+            keyword_summary[&#39;total_thickness&#39;] = total_thickness
+            concat_list.append(keyword_summary)
+        output = pd.concat(concat_list)
+        return output
+    
+    def to_shp(self, output_filepath: str| pathlib.PurePath) -&gt; None:
+        &#34;&#34;&#34;
+        Save the data to a shapefile.
+
+        Parameters:
+        - path (str | pathlib.PurePath): The path to save the shapefile to.
+        &#34;&#34;&#34;
+        summary = self.summary()
+        gdf = gpd.GeoDataFrame(summary, geometry=gpd.points_from_xy(summary[&#39;X&#39;], summary[&#39;Y&#39;]), 
+                               crs=self._crs)
+        if  Path(output_filepath).suffix.lower() == &#39;.shp&#39;:
+            gdf.to_file(output_filepath, driver=&#39;ESRI Shapefile&#39;)
+            print(&#39;The output file saved to {}&#39;.format(Path(output_filepath).resolve()))
+        elif Path(output_filepath).suffix.lower() == &#39;.gpkg&#39;:
+            gdf.to_file(output_filepath, driver=&#39;GPKG&#39;, layer=Path(self.fname[0]).stem)
+            print(&#39;The output file saved to {}&#39;.format(Path(output_filepath).resolve()))
+        elif Path(output_filepath).suffix.lower() == &#39;.geojson&#39;:
+            gdf.to_file(output_filepath, driver=&#39;GeoJSON&#39;)
+            print(&#39;The output file saved to {}&#39;.format(Path(output_filepath).resolve()))
+        else: 
+            raise ValueError(&#34;The output file format is not supported, please use .shp, .gpkg, or .geojson&#34;)
+
+if __name__ == &#34;__main__&#34;:
+    print(&#39;This is a module, please import it to use it.&#39;)
+    a = ProcessWell([r&#39;C:\Users\jldz9\PycharmProjects\tTEM_toolbox\data\Well_log.xlsx&#39;])</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="ttemtoolbox.core.process_well.ProcessWell"><code class="flex name class">
+<span>class <span class="ident">ProcessWell</span></span>
+<span>(</span><span>fname: pathlib.PurePath | str | list, crs: str = 'epsg:4326', unit: str = 'feet')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This class is use to process and format lithology well logs (from excel or csv) and water level data (from USGS).
+All data were assume under metric unit (m). </p>
+<p>:param lithologyfname: one or a list of string, pathlib.PurePath object, pandas dataframe. The input files(s)
+shall be either csv or excel file(s) that contains lithology and location data. sheet name and column name
+needs to be clearly marked as Lithology, Location, Latitude, Longitude, Depth_top, Depth_bottom or anything
+similiar, keyword(s) can be modified under tTEM_toolbox/defaults/constants.py.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ProcessWell:
+    &#34;&#34;&#34;
+    This class is use to process and format lithology well logs (from excel or csv) and water level data (from USGS).\
+    All data were assume under metric unit (m). \n
+    :param lithologyfname: one or a list of string, pathlib.PurePath object, pandas dataframe. The input files(s) \
+            shall be either csv or excel file(s) that contains lithology and location data. sheet name and column name \
+            needs to be clearly marked as Lithology, Location, Latitude, Longitude, Depth_top, Depth_bottom or anything\
+            similiar, keyword(s) can be modified under tTEM_toolbox/defaults/constants.py.\
+    &#34;&#34;&#34;
+    def __init__(self,
+                 fname: str| pathlib.PurePath | list,
+                 crs: str = &#39;epsg:4326&#39;,
+                 unit: str = &#39;feet&#39;):
+        if isinstance(fname, str | pathlib.PurePath):
+            self.fname = [fname]
+            print(&#39;reading lithology from {}&#39;.format(Path(fname).name))
+        elif isinstance(fname, list):
+            if len(fname) == 0:
+                raise ValueError(&#39;Input file path is empty&#39;)
+            else:
+                self.fname = fname
+                print(&#39;reading lithology from {}&#39;.format([Path(f).name for f in fname]))
+        if unit == &#39;feet&#39;: 
+            self.unit = &#39;feet&#39;
+            self.unitconvert = 3.28084
+        elif unit == &#39;meter&#39;:
+            self.unit = &#39;meter&#39;
+            self.unitconvert = 1
+        self._crs = crs
+        self.data = self._format_well()
+        self.crs = self.data.crs
+        
+
+
+    @staticmethod
+    def _find_all_readable(path:pathlib.PurePath)-&gt;list:
+        &#34;&#34;&#34;
+        This will receive a single path-like input and try to filter all readable file paths for well logs uses.
+        :param path: path-like pathlib.PurePath object or string
+        :return: list of pathlib.PurePath objects
+        &#34;&#34;&#34;
+        readable_ext = constants.CSV_EXTENSION + constants.EXCEL_EXTENSION
+        if not isinstance(path, (str, pathlib.PurePath)):
+            raise TypeError(&#39;Input path must be a string or pathlib.PurePath object&#39;)
+
+        if Path(path).is_dir():
+            file_list = [f for f in Path(path).iterdir() if f.suffix in readable_ext]
+            if len(file_list) == 0:
+                raise ValueError(&#39;No {} file found in {}&#39;.format(readable_ext, path))
+            return file_list
+        elif Path(path).is_file():
+            if Path(path).suffix in readable_ext:
+                file_list = [path]
+            else:
+                raise ValueError(&#39;Input file does not have extension of {}&#39;.format(readable_ext))
+            return file_list
+
+    @staticmethod
+    def _format_input(fname:str| pathlib.PurePath| list| pd.DataFrame) -&gt; list:
+        &#34;&#34;&#34;
+        This will format input file path(s) to a list of pandas dataframe (read from csv) and/or dict that includes all sheets in the excel\
+         file, each sheet were pandas dataframe. If input is a pandas dataframe, it will return the input dataframe in a list.
+        :param fname: one or a list of string, pathlib.PurePath object, pandas dataframe
+        :return: a list of pandas dataframe and/or dict
+        &#34;&#34;&#34;
+        if isinstance(fname, (str, pathlib.PurePath)):
+            fname = [fname]
+        elif isinstance(fname, list):
+            pass
+        else:
+            raise TypeError(&#39;Input must be one or a list of string, pathlib.PurePath objects&#39;)
+        export_list = []
+        for path in fname:
+            file_list = ProcessWell._find_all_readable(path)
+            excels = [file for file in file_list if Path(file).suffix in constants.EXCEL_EXTENSION]
+            csvs = [file for file in file_list if Path(file).suffix in constants.CSV_EXTENSION]
+            read_excels = [pd.read_excel(file, sheet_name=None) for file in excels]
+            read_csvs = [pd.read_csv(file) for file in csvs]
+            combined = read_excels + read_csvs
+            export_list.append(combined)
+        result = [item for sublist in export_list for item in sublist]
+        return result
+    @staticmethod
+    def _read_lithology(fname: str| pathlib.PurePath |list| pd.DataFrame, mtoft=1) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;
+        Try to read lithology sheet from Excel file with tab name similar to &#39;Lithology&#39;, or csv file contains lithology data.
+        :param fname: one or a list of string, pathlib.PurePath object, pandas dataframe
+        :return:
+        &#34;&#34;&#34;
+        result = ProcessWell._format_input(fname)
+        lithology_list = []
+        for single_file in result:
+            if isinstance(single_file, dict):  # which means it is an Excel file
+                match_sheet_name = tools.keyword_search(single_file, constants.LITHOLOGY_SHEET_NAMES)
+                if len(match_sheet_name) == 0:
+                    continue
+                lithology_sheet = single_file[match_sheet_name[0]]
+                lithology_list.append(lithology_sheet)
+            if isinstance(single_file, pd.DataFrame):  # which means it is a csv file
+                match_column_lithology = tools.keyword_search(single_file, constants.LITHOLOGY_COLUMN_NAMES_KEYWORD)
+                if match_column_lithology &gt; 0:
+                    lithology_sheet = single_file
+                    lithology_list.append(lithology_sheet)
+        concat_list = []
+        for sheet in lithology_list:
+            match_column_lithology = tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_KEYWORD)
+            match_column_bore = tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_BORE)
+            match_column_depth_top = tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_DEPTH_TOP)
+            match_column_depth_bottom = tools.keyword_search(sheet, constants.LITHOLOGY_COLUMN_NAMES_DEPTH_BOTTOM)
+
+            lithology = pd.DataFrame(sheet[match_column_lithology[0]])
+            lithology.columns = [&#39;Keyword&#39;]
+            lithology[&#39;Bore&#39;] = sheet[match_column_bore[0]]
+            lithology[&#39;Depth_top&#39;] = sheet[match_column_depth_top[0]]/mtoft
+            lithology[&#39;Depth_top&#39;]= lithology[&#39;Depth_top&#39;].round(2)
+            lithology[&#39;Depth_bottom&#39;] = sheet[match_column_depth_bottom[0]]/mtoft
+            lithology[&#39;Depth_bottom&#39;] = lithology[&#39;Depth_bottom&#39;].round(2)
+            lithology[&#39;Thickness&#39;] = lithology[&#39;Depth_bottom&#39;].subtract(lithology[&#39;Depth_top&#39;])
+
+            concat_list.append(lithology)
+        result = pd.concat(concat_list)
+        result = result[[&#39;Bore&#39;, &#39;Depth_top&#39;, &#39;Depth_bottom&#39;, &#39;Thickness&#39;, &#39;Keyword&#39;]]
+        return result
+
+    @staticmethod
+    def _read_spatial(fname: str| pathlib.PurePath, mtoft=1) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;
+        Similiar to _read_lithology, but read location sheet from Excel file with tab name similar to &#39;Location&#39;, \
+        or csv file contains location data.
+        :param fname: fname: one or a list of string, pathlib.PurePath object, pandas dataframe
+        :return:
+        &#34;&#34;&#34;
+        result = ProcessWell._format_input(fname)
+        location_list = []
+        for single_file in result:
+            if isinstance(single_file, dict):
+                match_sheet_name = utils.tools.keyword_search(single_file, constants.LOCATION_SHEET_NAMES)
+                if len(match_sheet_name) == 0:
+                    continue
+                location_sheet = single_file[match_sheet_name[0]]
+                location_list.append(location_sheet)
+            if isinstance(single_file, pd.DataFrame):
+                match_column_location = utils.tools.keyword_search(single_file, constants.LOCATION_COLUMN_NAMES_LON)
+                if match_column_location &gt; 0:
+                    location_sheet = single_file
+                    location_list.append(location_sheet)
+        concat_list = []
+        for sheet in location_list:
+            match_column_lat = utils.tools.keyword_search(sheet, constants.LOCATION_COLUMN_NAMES_LAT)
+            match_column_lon = utils.tools.keyword_search(sheet, constants.LOCATION_COLUMN_NAMES_LON)
+            match_column_elevation = utils.tools.keyword_search(sheet, constants.LOCATION_COLUMN_NAMES_ELEVATION)
+            location = pd.DataFrame(sheet[match_column_lat[0]])
+            location.columns = [&#39;Latitude&#39;]
+            location[&#39;Longitude&#39;] = sheet[match_column_lon[0]]
+            location[&#39;Bore&#39;] = sheet[&#39;Bore&#39;]
+            location[&#39;Elevation&#39;] = sheet[match_column_elevation[0]]/mtoft
+            location[&#39;Elevation&#39;] = location[&#39;Elevation&#39;].round(2)
+            concat_list.append(location)
+        result = pd.concat(concat_list)
+        return result
+
+
+    @staticmethod
+    def _fill(group, factor=100) -&gt; pd.DataFrame:
+        newgroup = group.loc[group.index.repeat(group.Thickness * factor)]
+        mul_per_gr = newgroup.groupby(&#39;Elevation_top&#39;).cumcount()
+        newgroup[&#39;Elevation_top&#39;] = newgroup[&#39;Elevation_top&#39;].subtract(mul_per_gr * 1 / factor)
+        newgroup[&#39;Depth_top&#39;] = newgroup[&#39;Depth_top&#39;].add(mul_per_gr * 1 / factor)
+        newgroup[&#39;Depth_bottom&#39;] = newgroup[&#39;Depth_top&#39;].add(1 / factor)
+        newgroup[&#39;Elevation_bottom&#39;] = newgroup[&#39;Elevation_top&#39;].subtract(1 / factor)
+        newgroup[&#39;Thickness&#39;] = 1 / factor
+        return newgroup
+
+    @staticmethod
+    def _lithology_location_connect(lithology: pd.DataFrame,
+                                   location: pd.DataFrame) -&gt; pd.DataFrame:
+        &#34;&#34;&#34;
+        Connect lithology and location data by Borehole ID
+        :param lithology: lithology dataframe
+        :param location: location dataframe
+        :return: combined dataframe
+        &#34;&#34;&#34;
+        lithology_group = lithology.groupby(&#39;Bore&#39;)
+        concatlist = []
+        for name, group in lithology_group:
+            group_location = location[location[&#39;Bore&#39;] == name]
+            if group_location.empty:
+                continue
+            group[&#39;Y&#39;] = group_location[&#39;Latitude&#39;].iloc[0]
+            group[&#39;X&#39;] = group_location[&#39;Longitude&#39;].iloc[0]
+            group[&#39;Z&#39;] = group_location[&#39;Elevation&#39;].iloc[0]
+            group[&#39;Elevation_top&#39;] = group[&#39;Z&#39;].subtract(group[&#39;Depth_top&#39;])
+            group[&#39;Elevation_bottom&#39;] = group[&#39;Z&#39;].subtract(group[&#39;Depth_bottom&#39;])
+            concatlist.append(group)
+        result = pd.concat(concatlist)
+        return result
+
+
+    @staticmethod
+    def _assign_keyword_as_value(welllog_df) -&gt; pd.DataFrame:
+        conditionlist = [
+            (welllog_df[&#34;Keyword&#34;] == &#34;fine grain&#34;),
+            (welllog_df[&#34;Keyword&#34;] == &#34;mix grain&#34;),
+            (welllog_df[&#34;Keyword&#34;] == &#34;coarse grain&#34;)
+        ]
+        choicelist = [1, 2, 3]
+        welllog_df[&#34;Keyword_n&#34;] = np.select(conditionlist, choicelist)
+        return welllog_df
+
+
+    def _format_well(self) -&gt; gpd.GeoDataFrame:
+        lithology = self._read_lithology(self.fname, self.unitconvert)
+        location = self._read_spatial(self.fname, self.unitconvert)
+        self.data = self._lithology_location_connect(lithology, location)
+        self.data = ProcessWell._assign_keyword_as_value(self.data)
+        self.data.reset_index(drop=True, inplace=True)
+        gdf = gpd.GeoDataFrame(self.data, geometry=gpd.points_from_xy(self.data[&#39;X&#39;], self.data[&#39;Y&#39;]), 
+                               crs=self._crs)
+        self.data = gdf
+        return self.data
+
+    def reproject(self, crs: str) -&gt; gpd.GeoDataFrame:
+        &#34;&#34;&#34;
+        Reproject the data to a given coordinate system.
+
+        Parameters:
+        - crs (str): The coordinate system to reproject the data to.
+
+        Returns:
+        - geopandas.GeoDataFrame: The reprojected data.
+        &#34;&#34;&#34;
+        self.data = self.data.to_crs(crs)
+        self._crs = crs
+        self.data[&#39;X&#39;] = self.data.geometry.x
+        self.data[&#39;Y&#39;] = self.data.geometry.y
+        return self.data
+    
+    
+    def resample(self, scale: int) -&gt; gpd.GeoDataFrame:
+        &#34;&#34;&#34;
+        Upscales the data by a given scale factor.
+
+        Parameters:
+        - scale (int): The scale factor to upscale the data by.
+
+        Returns:
+        - geopandas.GeoDataFrame: The upscaled data.
+        &#34;&#34;&#34;
+        group = self.data.groupby(&#39;Bore&#39;)
+        self.data = group.apply(lambda x:ProcessWell._fill(x, scale))
+        self.data.reset_index(drop=True, inplace=True)
+        print(&#39;resampling lithology to {} &#39;.format(1/scale))
+        return self.data
+    
+    def summary(self):
+        groups = self.data.groupby(&#39;Bore&#39;)
+        concat_list = []
+        for bore, group in groups: 
+            total_thickness = group[&#39;Thickness&#39;].sum()
+            keywordgroup = group.groupby(&#39;Keyword&#39;)
+            keyword_summary = keywordgroup.agg({
+                &#39;Thickness&#39;: &#39;sum&#39;,
+                &#39;X&#39;: &#39;first&#39;,
+                &#39;Y&#39;: &#39;first&#39;,
+                &#39;Z&#39;: &#39;first&#39;
+            })
+            keyword_summary[keyword_summary.index.name] = keyword_summary.index.values
+            keyword_summary[&#39;ratio&#39;] = keyword_summary[&#39;Thickness&#39;] / total_thickness
+            keyword_summary.reset_index(drop=True, inplace=True)
+            keyword_summary[&#39;bore&#39;] = bore
+            keyword_summary[&#39;unit&#39;] = &#39;meter&#39;
+            keyword_summary[&#39;total_thickness&#39;] = total_thickness
+            concat_list.append(keyword_summary)
+        output = pd.concat(concat_list)
+        return output
+    
+    def to_shp(self, output_filepath: str| pathlib.PurePath) -&gt; None:
+        &#34;&#34;&#34;
+        Save the data to a shapefile.
+
+        Parameters:
+        - path (str | pathlib.PurePath): The path to save the shapefile to.
+        &#34;&#34;&#34;
+        summary = self.summary()
+        gdf = gpd.GeoDataFrame(summary, geometry=gpd.points_from_xy(summary[&#39;X&#39;], summary[&#39;Y&#39;]), 
+                               crs=self._crs)
+        if  Path(output_filepath).suffix.lower() == &#39;.shp&#39;:
+            gdf.to_file(output_filepath, driver=&#39;ESRI Shapefile&#39;)
+            print(&#39;The output file saved to {}&#39;.format(Path(output_filepath).resolve()))
+        elif Path(output_filepath).suffix.lower() == &#39;.gpkg&#39;:
+            gdf.to_file(output_filepath, driver=&#39;GPKG&#39;, layer=Path(self.fname[0]).stem)
+            print(&#39;The output file saved to {}&#39;.format(Path(output_filepath).resolve()))
+        elif Path(output_filepath).suffix.lower() == &#39;.geojson&#39;:
+            gdf.to_file(output_filepath, driver=&#39;GeoJSON&#39;)
+            print(&#39;The output file saved to {}&#39;.format(Path(output_filepath).resolve()))
+        else: 
+            raise ValueError(&#34;The output file format is not supported, please use .shp, .gpkg, or .geojson&#34;)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="ttemtoolbox.core.process_well.ProcessWell.reproject"><code class="name flex">
+<span>def <span class="ident">reproject</span></span>(<span>self, crs: str) ‑> geopandas.geodataframe.GeoDataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Reproject the data to a given coordinate system.</p>
+<p>Parameters:
+- crs (str): The coordinate system to reproject the data to.</p>
+<p>Returns:
+- geopandas.GeoDataFrame: The reprojected data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reproject(self, crs: str) -&gt; gpd.GeoDataFrame:
+    &#34;&#34;&#34;
+    Reproject the data to a given coordinate system.
+
+    Parameters:
+    - crs (str): The coordinate system to reproject the data to.
+
+    Returns:
+    - geopandas.GeoDataFrame: The reprojected data.
+    &#34;&#34;&#34;
+    self.data = self.data.to_crs(crs)
+    self._crs = crs
+    self.data[&#39;X&#39;] = self.data.geometry.x
+    self.data[&#39;Y&#39;] = self.data.geometry.y
+    return self.data</code></pre>
+</details>
+</dd>
+<dt id="ttemtoolbox.core.process_well.ProcessWell.resample"><code class="name flex">
+<span>def <span class="ident">resample</span></span>(<span>self, scale: int) ‑> geopandas.geodataframe.GeoDataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Upscales the data by a given scale factor.</p>
+<p>Parameters:
+- scale (int): The scale factor to upscale the data by.</p>
+<p>Returns:
+- geopandas.GeoDataFrame: The upscaled data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def resample(self, scale: int) -&gt; gpd.GeoDataFrame:
+    &#34;&#34;&#34;
+    Upscales the data by a given scale factor.
+
+    Parameters:
+    - scale (int): The scale factor to upscale the data by.
+
+    Returns:
+    - geopandas.GeoDataFrame: The upscaled data.
+    &#34;&#34;&#34;
+    group = self.data.groupby(&#39;Bore&#39;)
+    self.data = group.apply(lambda x:ProcessWell._fill(x, scale))
+    self.data.reset_index(drop=True, inplace=True)
+    print(&#39;resampling lithology to {} &#39;.format(1/scale))
+    return self.data</code></pre>
+</details>
+</dd>
+<dt id="ttemtoolbox.core.process_well.ProcessWell.summary"><code class="name flex">
+<span>def <span class="ident">summary</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def summary(self):
+    groups = self.data.groupby(&#39;Bore&#39;)
+    concat_list = []
+    for bore, group in groups: 
+        total_thickness = group[&#39;Thickness&#39;].sum()
+        keywordgroup = group.groupby(&#39;Keyword&#39;)
+        keyword_summary = keywordgroup.agg({
+            &#39;Thickness&#39;: &#39;sum&#39;,
+            &#39;X&#39;: &#39;first&#39;,
+            &#39;Y&#39;: &#39;first&#39;,
+            &#39;Z&#39;: &#39;first&#39;
+        })
+        keyword_summary[keyword_summary.index.name] = keyword_summary.index.values
+        keyword_summary[&#39;ratio&#39;] = keyword_summary[&#39;Thickness&#39;] / total_thickness
+        keyword_summary.reset_index(drop=True, inplace=True)
+        keyword_summary[&#39;bore&#39;] = bore
+        keyword_summary[&#39;unit&#39;] = &#39;meter&#39;
+        keyword_summary[&#39;total_thickness&#39;] = total_thickness
+        concat_list.append(keyword_summary)
+    output = pd.concat(concat_list)
+    return output</code></pre>
+</details>
+</dd>
+<dt id="ttemtoolbox.core.process_well.ProcessWell.to_shp"><code class="name flex">
+<span>def <span class="ident">to_shp</span></span>(<span>self, output_filepath: str | pathlib.PurePath) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Save the data to a shapefile.</p>
+<p>Parameters:
+- path (str | pathlib.PurePath): The path to save the shapefile to.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_shp(self, output_filepath: str| pathlib.PurePath) -&gt; None:
+    &#34;&#34;&#34;
+    Save the data to a shapefile.
+
+    Parameters:
+    - path (str | pathlib.PurePath): The path to save the shapefile to.
+    &#34;&#34;&#34;
+    summary = self.summary()
+    gdf = gpd.GeoDataFrame(summary, geometry=gpd.points_from_xy(summary[&#39;X&#39;], summary[&#39;Y&#39;]), 
+                           crs=self._crs)
+    if  Path(output_filepath).suffix.lower() == &#39;.shp&#39;:
+        gdf.to_file(output_filepath, driver=&#39;ESRI Shapefile&#39;)
+        print(&#39;The output file saved to {}&#39;.format(Path(output_filepath).resolve()))
+    elif Path(output_filepath).suffix.lower() == &#39;.gpkg&#39;:
+        gdf.to_file(output_filepath, driver=&#39;GPKG&#39;, layer=Path(self.fname[0]).stem)
+        print(&#39;The output file saved to {}&#39;.format(Path(output_filepath).resolve()))
+    elif Path(output_filepath).suffix.lower() == &#39;.geojson&#39;:
+        gdf.to_file(output_filepath, driver=&#39;GeoJSON&#39;)
+        print(&#39;The output file saved to {}&#39;.format(Path(output_filepath).resolve()))
+    else: 
+        raise ValueError(&#34;The output file format is not supported, please use .shp, .gpkg, or .geojson&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="ttemtoolbox.core" href="index.html">ttemtoolbox.core</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="ttemtoolbox.core.process_well.ProcessWell" href="#ttemtoolbox.core.process_well.ProcessWell">ProcessWell</a></code></h4>
+<ul class="">
+<li><code><a title="ttemtoolbox.core.process_well.ProcessWell.reproject" href="#ttemtoolbox.core.process_well.ProcessWell.reproject">reproject</a></code></li>
+<li><code><a title="ttemtoolbox.core.process_well.ProcessWell.resample" href="#ttemtoolbox.core.process_well.ProcessWell.resample">resample</a></code></li>
+<li><code><a title="ttemtoolbox.core.process_well.ProcessWell.summary" href="#ttemtoolbox.core.process_well.ProcessWell.summary">summary</a></code></li>
+<li><code><a title="ttemtoolbox.core.process_well.ProcessWell.to_shp" href="#ttemtoolbox.core.process_well.ProcessWell.to_shp">to_shp</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
