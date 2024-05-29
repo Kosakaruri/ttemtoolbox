@@ -43,8 +43,10 @@ class ProcessTTEM:
         if not isinstance(doi_path, list) and doi_path:
             doi_path = [doi_path]
         if unit == 'meter':
+            self.unit = 'meter'
             self.unitconvert = 1
         elif unit == 'feet':
+            self.unit = 'feet'
             self.unitconvert = 3.28084
         self.fname = fname
         self.doi_path = doi_path

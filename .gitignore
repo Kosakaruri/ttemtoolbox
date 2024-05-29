@@ -18,3 +18,17 @@ src/ttemtoolbox/defaults/__pycache__/constants.cpython-312.pyc
 src/ttemtoolbox/utils/__pycache__/__init__.cpython-312.pyc
 src/ttemtoolbox/utils/__pycache__/tools.cpython-312.pyc
 test/*
+test/debug.py
+test.csv
+data/Well_log.xlsx
+src/ttemtoolbox/core/__pycache__/lithology_connect.cpython-312.pyc
+src/ttemtoolbox/core/__pycache__/rock_trans.cpython-312.pyc
+src/ttemtoolbox.egg-info/dependency_links.txt
+src/ttemtoolbox.egg-info/entry_points.txt
+src/ttemtoolbox.egg-info/PKG-INFO
+src/ttemtoolbox.egg-info/requires.txt
+src/ttemtoolbox.egg-info/SOURCES.txt
+src/ttemtoolbox.egg-info/top_level.txt
+test/debug.py
+test/debug.py
+data/Well_log.xlsx

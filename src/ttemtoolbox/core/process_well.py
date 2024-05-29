@@ -29,7 +29,7 @@ class ProcessWell:
     def __init__(self,
                  fname: str| pathlib.PurePath | list,
                  crs: str = 'epsg:4326',
-                 unit: str = 'meter'):
+                 unit: str = 'feet'):
         if isinstance(fname, str | pathlib.PurePath):
             self.fname = [fname]
             print('reading lithology from {}'.format(Path(fname).name))
@@ -40,10 +40,12 @@ class ProcessWell:
                 self.fname = fname
                 print('reading lithology from {}'.format([Path(f).name for f in fname]))
         if unit == 'feet': 
-            self.unitconvert = 1
-        elif unit == 'meter':
+            self.unit = 'feet'
             self.unitconvert = 3.28084
-        self.crs = crs
+        elif unit == 'meter':
+            self.unit = 'meter'
+            self.unitconvert = 1
+        self._crs = crs
         self.data = self._format_well()
         self.crs = self.data.crs
         
@@ -129,7 +131,9 @@ class ProcessWell:
             lithology.columns = ['Keyword']
             lithology['Bore'] = sheet[match_column_bore[0]]
             lithology['Depth_top'] = sheet[match_column_depth_top[0]]/mtoft
+            lithology['Depth_top']= lithology['Depth_top'].round(2)
             lithology['Depth_bottom'] = sheet[match_column_depth_bottom[0]]/mtoft
+            lithology['Depth_bottom'] = lithology['Depth_bottom'].round(2)
             lithology['Thickness'] = lithology['Depth_bottom'].subtract(lithology['Depth_top'])
 
             concat_list.append(lithology)
@@ -169,6 +173,7 @@ class ProcessWell:
             location['Longitude'] = sheet[match_column_lon[0]]
             location['Bore'] = sheet['Bore']
             location['Elevation'] = sheet[match_column_elevation[0]]/mtoft
+            location['Elevation'] = location['Elevation'].round(2)
             concat_list.append(location)
         result = pd.concat(concat_list)
         return result
@@ -179,7 +184,7 @@ class ProcessWell:
         newgroup = group.loc[group.index.repeat(group.Thickness * factor)]
         mul_per_gr = newgroup.groupby('Elevation_top').cumcount()
         newgroup['Elevation_top'] = newgroup['Elevation_top'].subtract(mul_per_gr * 1 / factor)
-        newgroup['Depth_top'] = newgroup['Depth_top'].subtract(mul_per_gr * 1 / factor)
+        newgroup['Depth_top'] = newgroup['Depth_top'].add(mul_per_gr * 1 / factor)
         newgroup['Depth_bottom'] = newgroup['Depth_top'].add(1 / factor)
         newgroup['Elevation_bottom'] = newgroup['Elevation_top'].subtract(1 / factor)
         newgroup['Thickness'] = 1 / factor
@@ -227,8 +232,9 @@ class ProcessWell:
         location = self._read_spatial(self.fname, self.unitconvert)
         self.data = self._lithology_location_connect(lithology, location)
         self.data = ProcessWell._assign_keyword_as_value(self.data)
+        self.data.reset_index(drop=True, inplace=True)
         gdf = gpd.GeoDataFrame(self.data, geometry=gpd.points_from_xy(self.data['X'], self.data['Y']), 
-                               crs=self.crs)
+                               crs=self._crs)
         self.data = gdf
         return self.data
 
@@ -243,7 +249,7 @@ class ProcessWell:
         - geopandas.GeoDataFrame: The reprojected data.
         """
         self.data = self.data.to_crs(crs)
-        self.crs = crs
+        self._crs = crs
         self.data['X'] = self.data.geometry.x
         self.data['Y'] = self.data.geometry.y
         return self.data
@@ -264,20 +270,29 @@ class ProcessWell:
         self.data.reset_index(drop=True, inplace=True)
         print('resampling lithology to {} '.format(1/scale))
         return self.data
+    
     def summary(self):
         groups = self.data.groupby('Bore')
-        agg_group = id_group.agg({'Depth_bottom': 'max',
-                                  'Elevation_Cell': 'max',
-                                  'Elevation_End': 'min',
-                                  'Resistivity': ['min', 'max', 'mean'],
-                                  'X': 'mean', 'Y': 'mean'})
-        agg_group.columns = agg_group.columns.map('_'.join)
-        agg_group.index.name = None
-        agg_group['ID'] = agg_group.index
-        self.summary = agg_group
-        self.summary.reset_index(drop=True, inplace=True)
-        self.summary.rename(columns={'X_mean': 'X', 'Y_mean': 'Y'}, inplace=True)
-        return self.summary
+        concat_list = []
+        for bore, group in groups: 
+            total_thickness = group['Thickness'].sum()
+            keywordgroup = group.groupby('Keyword')
+            keyword_summary = keywordgroup.agg({
+                'Thickness': 'sum',
+                'X': 'first',
+                'Y': 'first',
+                'Z': 'first'
+            })
+            keyword_summary[keyword_summary.index.name] = keyword_summary.index.values
+            keyword_summary['ratio'] = keyword_summary['Thickness'] / total_thickness
+            keyword_summary.reset_index(drop=True, inplace=True)
+            keyword_summary['bore'] = bore
+            keyword_summary['unit'] = 'meter'
+            keyword_summary['total_thickness'] = total_thickness
+            concat_list.append(keyword_summary)
+        output = pd.concat(concat_list)
+        return output
+    
     def to_shp(self, output_filepath: str| pathlib.PurePath) -> None:
         """
         Save the data to a shapefile.
@@ -285,16 +300,18 @@ class ProcessWell:
         Parameters:
         - path (str | pathlib.PurePath): The path to save the shapefile to.
         """
-        
+        summary = self.summary()
+        gdf = gpd.GeoDataFrame(summary, geometry=gpd.points_from_xy(summary['X'], summary['Y']), 
+                               crs=self._crs)
         if  Path(output_filepath).suffix.lower() == '.shp':
-            self.data.to_file(output_filepath, driver='ESRI Shapefile')
-            print('The output file is saved to {}'.format(Path(output_filepath).resolve()))
+            gdf.to_file(output_filepath, driver='ESRI Shapefile')
+            print('The output file saved to {}'.format(Path(output_filepath).resolve()))
         elif Path(output_filepath).suffix.lower() == '.gpkg':
-            self.data.to_file(output_filepath, driver='GPKG', layer=Path(self.fname[0]).stem)
-            print('The output file is saved to {}'.format(Path(output_filepath).resolve()))
+            gdf.to_file(output_filepath, driver='GPKG', layer=Path(self.fname[0]).stem)
+            print('The output file saved to {}'.format(Path(output_filepath).resolve()))
         elif Path(output_filepath).suffix.lower() == '.geojson':
-            self.data.to_file(output_filepath, driver='GeoJSON')
-            print('The output file is saved to {}'.format(Path(output_filepath).resolve()))
+            gdf.to_file(output_filepath, driver='GeoJSON')
+            print('The output file saved to {}'.format(Path(output_filepath).resolve()))
         else: 
             raise ValueError("The output file format is not supported, please use .shp, .gpkg, or .geojson")
 
