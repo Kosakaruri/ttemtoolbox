@@ -6,7 +6,7 @@ Install
 ```
 pip install ttemtoolbox
 ```
-import package
-```
-import tTEM_toolbox as tt
-```
+
+Check [WIKI](https://github.com/jldz9/ttemtoolbox/wiki) for instruction 
+
+
