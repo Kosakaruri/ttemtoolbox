@@ -49,8 +49,9 @@ def create_parser():
     subparser_water = subparser.add_parser('water')
     subparser_water.add_argument('water', metavar='PATH', help = 'Path to config file')
     subparser_water.add_argument('-w','--well_no', metavar='str[s]', help='Download specific well number')
-    subparser_water = subparser.add_parser('connect')
-    subparser_water.add_argument('connect', metavar='PATH', help = 'Path to config file')
+    subparser_connect = subparser.add_parser('connect')
+    subparser_connect.add_argument('connect', metavar='PATH', help = 'Path to config file')
+    
     return parser
 
 def cmd_line_parse(iargs=None):
@@ -239,7 +240,8 @@ def main(iargs=None):
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        sys.argv.append('-h')
+        print('Use ttemtoolbox -h or ttemtoolbox <ttem/lithology/water/connect> -h to check help manual')
+        sys.exit[1]
     main(sys.argv[1:])
 
 
