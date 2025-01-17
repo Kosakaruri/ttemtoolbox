@@ -287,10 +287,10 @@ class ProcessTTEM:
         agg_group.columns = agg_group.columns.map('_'.join)
         agg_group.index.name = None
         agg_group['ID'] = agg_group.index
-        self.summary = agg_group
-        self.summary.reset_index(drop=True, inplace=True)
-        self.summary.rename(columns={'X_mean': 'X', 'Y_mean': 'Y'}, inplace=True)
-        return self.summary
+        self.ttem_summary = agg_group
+        self.ttem_summary.reset_index(drop=True, inplace=True)
+        self.ttem_summary.rename(columns={'X_mean': 'X', 'Y_mean': 'Y'}, inplace=True)
+        return self.ttem_summary
     
     def set_crs(self, new_crs: str):
         """
@@ -344,7 +344,7 @@ class ProcessTTEM:
         :param output_filepath: The path to save the output shapefile or geospatial file.
         
         """
-        ttem_gdf = gpd.GeoDataFrame(self.summary, 
+        ttem_gdf = gpd.GeoDataFrame(self.ttem_summary, 
                                     geometry=gpd.points_from_xy(self.summary['X'], self.summary['Y']),
                                     crs=self.crs)
         if  Path(output_filepath).suffix.lower() == '.shp':
