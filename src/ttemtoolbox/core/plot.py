@@ -8,8 +8,11 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import plotly.express as px
 from scipy.stats import linregress
+
+from ttemtoolbox import core
 pd.options.plotting.backend = "plotly"
 pio.renderers.default = "browser"
+
 def generate_trace(data, *args):
     # use plotly to add plot
     # define color bar
@@ -307,6 +310,7 @@ def well_test_plot(data, window=10):
     )
     fig.add_trace(trace)
     return fig
+
 def plot_well_single(welllog, wellname:int=0):
     """
     Plot single trace of well log result for paper uses
