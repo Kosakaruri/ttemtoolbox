@@ -345,7 +345,7 @@ class ProcessTTEM:
         
         """
         ttem_gdf = gpd.GeoDataFrame(self.ttem_summary, 
-                                    geometry=gpd.points_from_xy(self.summary['X'], self.summary['Y']),
+                                    geometry=gpd.points_from_xy(self.ttem_summary['X'], self.ttem_summary['Y']),
                                     crs=self.crs)
         if  Path(output_filepath).suffix.lower() == '.shp':
             ttem_gdf.to_file(output_filepath, driver='ESRI Shapefile')
